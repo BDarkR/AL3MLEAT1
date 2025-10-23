@@ -2,7 +2,7 @@
   --bg:#0b0b0b;
   --card:#1d1c1c;
   --muted:#9b9b9b;
-  --accent:#e6c85a;
+  --accent:#27ae60; /* أخضر */
 }
 
 *{box-sizing:border-box}
@@ -16,17 +16,40 @@ body{
   -moz-osx-font-smoothing:grayscale;
 }
 
+/* خلفية كاملة مع صورة + طبقة تغميق */
+/* ضع صورة الخلفية في المسار: ./images/bg-hero.jpg أو عدّل المسار حسب مكان الصورة */
+.bg-mark{
+  position:fixed;
+  inset:0; /* top:0; right:0; bottom:0; left:0; — يملأ الشاشة */
+  width:100%;
+  height:100%;
+  /* تركيبة: طبقة تغميق فوق الصورة */
+  background:
+    linear-gradient(rgba(11,11,11,0.55), rgba(11,11,11,0.55)),
+    url("./1.png") center/cover no-repeat;
+  pointer-events:none;
+  filter:blur(1.5px);
+  opacity:0.95;
+  z-index:-1; /* تحت المحتوى */
+}
+
+/* إذا أردت خلفية أصغر أو علامة (كما في التصميم الأصلي) بدل التغطية الكاملة،
+   استبدل الخصائص أعلاه بالنسخة التالية (معلّقة):
 .bg-mark{
   position:fixed;
   right:0;
   bottom:0;
   width:60vmin;
   height:60vmin;
-  background:radial-gradient(circle at center, rgba(255,255,255,0.02), transparent 30%);
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.02), transparent 30%),
+    url("./images/bg-hero.jpg") center/contain no-repeat;
   pointer-events:none;
   filter:blur(2px);
   opacity:0.8;
+  z-index:-1;
 }
+*/
 
 .top-nav{padding:28px 24px; display:flex; justify-content:center}
 .top-nav .pill{
@@ -48,6 +71,7 @@ body{
   padding:18px;
 }
 
+/* تأكد أن البطاقة أعلى الخلفية */
 .card{
   width:420px;
   background:linear-gradient(#1a1a1a, #212121);
@@ -55,6 +79,8 @@ body{
   padding:28px;
   box-shadow:0 8px 30px rgba(0,0,0,0.6);
   border:1px solid rgba(255,255,255,0.03);
+  position:relative;
+  z-index:1;
 }
 
 .title{
@@ -68,10 +94,11 @@ body{
 .subtitle{
   text-align:center;
   color:var(--muted);
-  margin:0 0 18px;
+  margin:0 0 14px;
   font-size:13px;
 }
 
+/* الحقول */
 .input{
   width:100%;
   display:block;
@@ -85,6 +112,15 @@ body{
   font-size:14px;
 }
 
+/* جعل حقل الرقم بنفس حجم الحقول الأخرى (يمتد بعرض كامل) */
+.input.small{
+  width:100%;
+  max-width: none;
+  margin-inline-start:0;
+  display:block;
+}
+
+/* قائمة checkboxes */
 .checkbox-group{
   display:flex;
   flex-direction:column;
@@ -109,6 +145,7 @@ body{
   accent-color:var(--accent);
 }
 
+/* الأزرار والإجراءات */
 .actions{
   display:flex;
   flex-direction:column;
@@ -133,10 +170,11 @@ body{
 .btn.secondary{
   background:transparent;
   color:var(--accent);
-  border:1px dashed rgba(230,200,90,0.5);
+  border:1px dashed rgba(39,174,96,0.5); /* مطابق للون الأخضر */
   width:60%;
 }
 
+/* حقل النتيجة */
 .result{
   width:100%;
   padding:10px 12px;
@@ -146,8 +184,10 @@ body{
   border:1px solid rgba(255,255,255,0.02);
 }
 
+/* استجابة */
 @media (max-width:480px){
   .card{width:92%}
   .top-nav{padding:14px}
   .title{font-size:20px}
+  .input.small{max-width:100%}
 }
