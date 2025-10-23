@@ -272,34 +272,44 @@
     const EXCLUDE_PREFIXES = ['قيادة'];
     const EXCLUDED_INPUT_IDS = ['operations','opsDeputy','shiftTimeDisplay','noteField','noteCode','noteCount','noteType'];
 
-    // add player controls if allowed for a row
-    function addPlayerWrapToRowIfAllowed(row) {
-      if (!row || !(row instanceof HTMLElement)) return;
-      if (row.querySelector('.player-wrap')) return;
-      const lbl = row.querySelector('label');
-      const labelText = lbl ? (lbl.textContent||'').trim() : '';
-      // skip when inputs in row include excluded IDs
-      const inputs = Array.from(row.querySelectorAll('input'));
-      for (const inp of inputs) if (inp.id && EXCLUDED_INPUT_IDS.includes(inp.id)) return;
-      if (EXCLUDED_LABELS.includes(labelText)) return;
-      for (const p of EXCLUDE_PREFIXES) if (labelText.startsWith(p)) return;
-      if (labelText === 'العمليات' || labelText === 'نائب العمليات') return;
+   // استبدل دالة addPlayerWrapToRowIfAllowed الحالية بهذه النسخة
+function addPlayerWrapToRowIfAllowed(row) {
+  if (!row || !(row instanceof HTMLElement)) return;
 
-      const playerWrap = document.createElement('div');
-      playerWrap.className = 'player-wrap';
-      const chk = document.createElement('input');
-      chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
-      const span = document.createElement('span'); span.className='playerLabel'; span.textContent=' لاعب معتمد';
-      const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
-      playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
+  // جديد: لا نضيف player-wrap داخل قسم الملاحظات أو عناصر الملاحظات أو أداة الإضافة
+  if (row.closest && (row.closest('#notesSection') || row.closest('#notesList') || row.closest('.note-item') || row.closest('.note-controls'))) {
+    return;
+  }
 
-      // insert before hide/show/delete button if present
-      const btn = row.querySelector('.hide-btn, .del-btn');
-      if (btn) row.insertBefore(playerWrap, btn);
-      else row.appendChild(playerWrap);
+  if (row.querySelector('.player-wrap')) return;
+  const lbl = row.querySelector('label');
+  const labelText = lbl ? (lbl.textContent||'').trim() : '';
+  // skip when inputs in row include excluded IDs
+  const inputs = Array.from(row.querySelectorAll('input'));
+  for (const inp of inputs) if (inp.id && EXCLUDED_INPUT_IDS.includes(inp.id)) return;
+  if (EXCLUDED_LABELS.includes(labelText)) return;
+  for (const p of EXCLUDE_PREFIXES) if (labelText.startsWith(p)) return;
+  if (labelText === 'العمليات' || labelText === 'نائب العمليات') return;
 
-      bindPlayerToggle(row);
-    }
+  const playerWrap = document.createElement('div');
+  playerWrap.className = 'player-wrap';
+  const chk = document.createElement('input');
+  chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
+  const span = document.createElement('span'); span.className='playerLabel'; span.textContent=' لاعب معتمد';
+  const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
+  playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
+
+  // insert before hide/show/delete button if present
+  const btn = row.querySelector('.hide-btn, .del-btn');
+  if (btn) row.insertBefore(playerWrap, btn);
+  else row.appendChild(playerWrap);
+
+  bindPlayerToggle(row);
+}
+
+// تنظيف أي عناصر player-wrap موجودة بالفعل داخل قسم الملاحظات (نفّذ مرة واحدة بعد تحميل الصفحة)
+// يمكنك وضع السطر التالي مباشرة بعد تعريف الدالة أو تشغيله من Console
+document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, .note-controls .player-wrap').forEach(el=>el.remove());
 
     function bindPlayerToggle(row) {
       const chk = row.querySelector('.playerChk');
