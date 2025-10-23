@@ -239,7 +239,7 @@
             <input id="noteCode" class="input small" placeholder="مثال: H-018" />
             <input id="noteCount" class="input small" placeholder="رقم التوجيه" />
             <select id="noteType" class="small">
-              <option value="">نوع</option><option value="حرة">حرة</option><option value="سهم">سهم</option><option value="صقر">صقر</option><option value="برق">برق</option><option value="ردع">ردع</option>
+              <option value="">التوجيهات</option><option value="حرة">حرة</option><option value="سهم">سهم</option><option value="صقر">صقر</option><option value="برق">برق</option><option value="ردع">ردع</option>
             </select>
             <button type="button" id="addNoteBtn" class="add-btn">＋ إضافة</button>
           </div>
@@ -289,7 +289,7 @@
       playerWrap.className = 'player-wrap';
       const chk = document.createElement('input');
       chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
-      const span = document.createElement('span'); span.className='playerLabel'; span.textContent='لاعب';
+      const span = document.createElement('span'); span.className='playerLabel'; span.textContent=' لاعب معتمد';
       const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
       playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
 
@@ -475,7 +475,7 @@
       // player controls for note
       const playerWrap = document.createElement('div'); playerWrap.className='player-wrap';
       const chk = document.createElement('input'); chk.type='checkbox'; chk.className='playerChk';
-      const lbl = document.createElement('span'); lbl.className='playerLabel'; lbl.textContent='لاعب';
+      const lbl = document.createElement('span'); lbl.className='playerLabel'; lbl.textContent='لاعب معتمد';
       const mention = document.createElement('input'); mention.type='text'; mention.className='playerMention'; mention.placeholder='@player';
       mention.style.display='none';
 
