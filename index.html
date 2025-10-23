@@ -40,6 +40,22 @@
     .btn-pill.outline { background:transparent; color:var(--accent); border:1px solid var(--accent); }
     .btn-pill.filled { background:var(--accent); color:#fff; border:1px solid var(--accent); }
     .small-note{ color:var(--muted); font-size:13px; margin-bottom:8px; text-align:right; }
+
+    /* -----------------------------------------
+       IMPORTANT: keep the hide/show button visible
+       when the row is "hidden" by JS (hidden-row class)
+       ----------------------------------------- */
+    /* hide all children except control buttons (.hide-btn and .del-btn) */
+    .hidden-row > *:not(.hide-btn):not(.del-btn) {
+      display: none !important;
+    }
+    /* make the show-button clearer when row is hidden */
+    .hidden-row > .hide-btn {
+      color: #27ae60;
+      border-color: rgba(39,174,96,0.35);
+      background: rgba(0,0,0,0.06);
+    }
+    .hidden-row { align-items:center; }
   </style>
 </head>
 <body>
@@ -49,7 +65,6 @@
   <div class="top-nav">
     <nav>
       <div class="btn-pill outline" aria-hidden="true">تقرير العمليات الميناء</div>
-      <!-- تم تعديل الرابط هنا ليوجه إلى الموقع المطلوب -->
       <a class="btn-pill filled" href="https://boletofsf.odoo.com/" target="_blank" rel="noopener noreferrer">العودة إلى الموقع</a>
     </nav>
   </div>
@@ -82,6 +97,7 @@
         <div class="row"><label>نائب قائد امن المنشأت</label><input class="input role" data-role="نائب قائد امن المنشأت" value="H-000" /></div>
       </div>
 
+      <!-- القيادة (قابل للإضافة) -->
       <div class="section" id="leadershipSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">القيادة (قابل للإضافة)</h3>
         <div id="leadershipList">
@@ -98,78 +114,82 @@
         </div>
       </div>
 
-
-       <div class="section" id="leadershipSection">
-        <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">ردع(قابل للإضافة)</h3>
-        <div id="leadershipList">
-            <div class="row"><label>ردع 1</label><input class="input role" data-role="ردع 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>ردع 2</label><input class="input role" data-role="ردع 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-          </div>
-          <button type="button" class="add-btn" data-target="radaList">＋ إضافة ردع</button>
+      <!-- ردع -->
+      <div class="section" id="radaSection">
+        <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">ردع (قابل للإضافة)</h3>
+        <div id="radaList">
+          <div class="row"><label>ردع 1</label><input class="input role" data-role="ردع 1" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>ردع 2</label><input class="input role" data-role="ردع 2" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
         </div>
+        <button type="button" class="add-btn" data-target="radaList">＋ إضافة ردع</button>
+      </div>
 
-         <div class="section" id="leadershipSection">
+      <!-- برق -->
+      <div class="section" id="barqSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">برق (قابل للإضافة)</h3>
-        <div id="leadershipList">
-            <div class="row"><label>برق 1</label><input class="input role" data-role="برق 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>برق 2</label><input class="input role" data-role="برق 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-          </div>
-          <button type="button" class="add-btn" data-target="barqList">＋ إضافة برق</button>
+        <div id="barqList">
+          <div class="row"><label>برق 1</label><input class="input role" data-role="برق 1" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>برق 2</label><input class="input role" data-role="برق 2" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
         </div>
+        <button type="button" class="add-btn" data-target="barqList">＋ إضافة برق</button>
+      </div>
 
-        <div class="section" id="leadershipSection">
+      <!-- سهم -->
+      <div class="section" id="sahmSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">سهم</h3>
-        <div id="leadershipList">
-            <div class="row"><label>سهم 1</label><input class="input role" data-role="سهم 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>سهم 2</label><input class="input role" data-role="سهم 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-          </div>
+        <div id="sahmList">
+          <div class="row"><label>سهم 1</label><input class="input role" data-role="سهم 1" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>سهم 2</label><input class="input role" data-role="سهم 2" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
         </div>
+      </div>
 
-        <div class="section" id="leadershipSection">
+      <!-- مسؤولين البوابات / مشرفو الأمن -->
+      <div class="section" id="securitySupervisorsSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">مسؤولين البوابات</h3>
-        <div id="leadershipList">
-            <div class="row"><label>مشرف أمن 1</label><input class="input role" data-role="مشرف أمن 1" value="H-000"/></div>
-            <div class="row"><label>أمن 1</label><input class="input role" data-role="أمن 1" value="H-000"/></div>
-            <div class="row"><label>مساندة أمن 1</label><input class="input role" data-role="مساندة أمن 1" value="H-000"/></div>
+        <div id="securitySupervisors">
+          <div class="row"><label>مشرف أمن 1</label><input class="input role" data-role="مشرف أمن 1" value="H-000"/></div>
+          <div class="row"><label>أمن 1</label><input class="input role" data-role="أمن 1" value="H-000"/></div>
+          <div class="row"><label>مساندة أمن 1</label><input class="input role" data-role="مساندة أمن 1" value="H-000"/></div>
 
-            <div class="row spacer" aria-hidden="true"><div style="flex:1;height:10px"></div></div>
+          <div class="row spacer" aria-hidden="true"><div style="flex:1;height:10px"></div></div>
 
-            <div class="row"><label>مشرف أمن 2</label><input class="input role" data-role="مشرف أمن 2" value="H-000"/></div>
-            <div class="row"><label>أمن 2</label><input class="input role" data-role="أمن 2" value="H-000"/></div>
-          </div>
+          <div class="row"><label>مشرف أمن 2</label><input class="input role" data-role="مشرف أمن 2" value="H-000"/></div>
+          <div class="row"><label>أمن 2</label><input class="input role" data-role="أمن 2" value="H-000"/></div>
         </div>
+      </div>
 
-        <div class="section" id="leadershipSection">
-        <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px"> حرة  (قابل للإضافة)</h3>
-        <div id="leadershipList">
-            <div class="row"><label>حرة 1</label><input class="input role" data-role="حرة 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>حرة 2</label><input class="input role" data-role="حرة 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>حرة 3</label><input class="input role" data-role="حرة 3" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>حرة 4</label><input class="input role" data-role="حرة 4" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>حرة 5</label><input class="input role" data-role="حرة 5" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-          </div>
-          <button type="button" class="add-btn" data-target="huraList">＋ إضافة حرة</button>
+      <!-- حرة -->
+      <div class="section" id="huraSection">
+        <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">حرة <span style="color:#9b9b9b;font-size:13px;margin-left:8px">(قابل للإضافة)</span></h3>
+        <div id="huraList">
+          <div class="row"><label>حرة 1</label><input class="input role" data-role="حرة 1" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>حرة 2</label><input class="input role" data-role="حرة 2" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>حرة 3</label><input class="input role" data-role="حرة 3" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>حرة 4</label><input class="input role" data-role="حرة 4" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>حرة 5</label><input class="input role" data-role="حرة 5" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
         </div>
+        <button type="button" class="add-btn" data-target="huraList">＋ إضافة حرة</button>
+      </div>
 
-         <div class="section" id="leadershipSection">
-        <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px"> صقر  (قابل للإضافة)</h3>
-        <div id="leadershipList">
-            <div class="row"><label>صقر 1</label><input class="input role" data-role="صقر 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-            <div class="row"><label>صقر 2</label><input class="input role" data-role="صقر 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
-          </div>
-          <button type="button" class="add-btn" data-target="saqrList">＋ إضافة صقر</button>
+      <!-- صقر -->
+      <div class="section" id="saqrSection">
+        <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">صقر (قابل للإضافة)</h3>
+        <div id="saqrList">
+          <div class="row"><label>صقر 1</label><input class="input role" data-role="صقر 1" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
+          <div class="row"><label>صقر 2</label><input class="input role" data-role="صقر 2" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
         </div>
+        <button type="button" class="add-btn" data-target="saqrList">＋ إضافة صقر</button>
+      </div>
 
-        <div style="margin-top:12px;">
-          <div class="row"><label>شرطة عسكرية</label><input class="input role" data-role="شرطة عسكرية" value="H-000"/></div>
-        </div>
+      <div style="margin-top:12px;">
+        <div class="row"><label>شرطة عسكرية</label><input class="input role" data-role="شرطة عسكرية" value="H-000"/></div>
+      </div>
 
-        <div style="margin-top:12px;">
-          <div id="coastalList">
-            <div class="row"><label>عين 1</label><input class="input role" data-role="عين 1" value="H-000"/></div>
-            <div class="row"><label>ساحل 1</label><input class="input role" data-role="ساحل 1" value="H-000"/></div>
-            <div class="row"><label>سجن 1</label><input class="input role" data-role="سجن 1" value="H-000"/></div>
-          </div>
+      <div style="margin-top:12px;">
+        <div id="coastalList">
+          <div class="row"><label>عين 1</label><input class="input role" data-role="عين 1" value="H-000"/></div>
+          <div class="row"><label>ساحل 1</label><input class="input role" data-role="ساحل 1" value="H-000"/></div>
+          <div class="row"><label>سجن 1</label><input class="input role" data-role="سجن 1" value="H-000"/></div>
         </div>
       </div>
 
@@ -193,9 +213,9 @@
         </div>
       </div>
 
-       <div class="section" id="criminalSection">
-        <h3 style="margin:0 0 8px;color:var(--accent);font-size:16px"> الأمن و الحماية</h3>
-        <div id="criminalList">
+      <div class="section" id="securitySection">
+        <h3 class="green-heading">الأمن والحماية</h3>
+        <div id="securityList">
           <div class="row"><label>حماية 1</label><input class="input role" data-role="حماية 1" value="H-000"/></div>
           <div class="row"><label>حماية 2</label><input class="input role" data-role="حماية 2" value="H-000"/></div>
         </div>
@@ -325,12 +345,15 @@
       return row;
     }
 
-    // bind add buttons
+    // bind add buttons (works for all sections whose data-target matches an existing container id)
     document.querySelectorAll('.add-btn').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const target = btn.getAttribute('data-target');
         const list = document.getElementById(target);
-        if (!list) return;
+        if (!list) {
+          console.warn('add-btn: target not found ->', target);
+          return;
+        }
         const existing = list.querySelectorAll('.row').length;
         const index = existing + 1;
         const firstLabel = list.querySelector('.row label');
@@ -350,21 +373,25 @@
       if (!row || !btn) return;
       const wasHidden = row.dataset.hidden==='true';
       if (wasHidden) {
-        row.dataset.hidden='false'; row.classList.remove('hidden-row'); btn.textContent='اخفاء';
+        row.dataset.hidden='false';
+        row.classList.remove('hidden-row');
+        btn.textContent='اخفاء';
       } else {
-        row.dataset.hidden='true'; row.classList.add('hidden-row'); btn.textContent='اظهار';
+        row.dataset.hidden='true';
+        row.classList.add('hidden-row');
+        btn.textContent='اظهار';
       }
       checkDuplicates();
     }
 
+    // bind all hide buttons (generalized so it matches any section)
     function bindRowHideButtons(){
-      document.querySelectorAll('#huraList .hide-btn, #saqrList .hide-btn, #barqList .hide-btn, #radaList .hide-btn, #sahmList .hide-btn')
-        .forEach(btn=>{
-          if (btn.dataset.boundHide==='1') return;
-          const row = btn.closest('.row');
-          btn.addEventListener('click', ()=> toggleHideRow(row, btn));
-          btn.dataset.boundHide='1';
-        });
+      document.querySelectorAll('.hide-btn').forEach(btn=>{
+        if (btn.dataset.boundHide==='1') return;
+        const row = btn.closest('.row');
+        btn.addEventListener('click', ()=> toggleHideRow(row, btn));
+        btn.dataset.boundHide='1';
+      });
     }
 
     function bindStaticRowDeleteButtons(){
@@ -469,7 +496,7 @@
       document.getElementById('noteCode').value=''; document.getElementById('noteCount').value='';
     });
 
-    // append from container, skip hidden rows
+    // append functions (unchanged logic) -------------------------------------------------------
     function appendFromContainer(containerId,out,addBlankAfter=true){
       const container = document.getElementById(containerId); if (!container) return;
       const rows = container.querySelectorAll('.row');
@@ -523,7 +550,7 @@
       });
     }
 
-    // build report (unchanged)
+    // build report (unchanged logic)
     function buildReportText(){
       checkDuplicates();
       const out=[]; const shiftLabel='الميناء'; const timeLabel='6 صباحا';
