@@ -30,31 +30,16 @@
     .playerChk { width:18px; height:18px; cursor:pointer; }
     .playerMention { width:160px; padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.04); background:#222; color:#ddd; display:none; font-size:13px; }
 
-    /* header buttons style */
-    .top-nav { padding:6px 0 18px; }
+   /* header buttons style like screenshot */
+    .top-nav { padding:12px 18px; }
+    .top-nav nav { display:flex; gap:8px; align-items:center; justify-content:flex-start; flex-wrap:wrap; }
     .btn-pill {
       display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:6px 14px;
-      height:34px; line-height:1; font-size:14px; border-radius:18px; font-weight:700;
+      height:34px; line-height:1; font-size:14px; border-radius:18px; font-weight:700; white-space:nowrap;
     }
     .btn-pill.outline { background:transparent; color:var(--accent); border:1px solid var(--accent); }
     .btn-pill.filled { background:var(--accent); color:#fff; border:1px solid var(--accent); }
     .small-note{ color:var(--muted); font-size:13px; margin-bottom:8px; text-align:right; }
-
-    /* green heading */
-    .green-heading { color: var(--accent); font-size:15px; font-weight:700; margin:0 0 8px; display:block; }
-
-    /* hidden-row: keep the row and the hide/show button visible, hide the input controls */
-    .hidden-row { opacity:0.45; }
-    .hidden-row .role, .hidden-row .player-wrap { display:none !important; }
-    .hidden-row label { color:#8f8f8f; }
-
-    /* notes area */
-    .note-controls { display:flex; gap:8px; align-items:center; width:100%; }
-    .note-controls select, .note-controls input { padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:#222; color:#ddd; }
-    .note-controls .small { width:140px; }
-    .note-item { padding:6px 8px; border-radius:6px; background:rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center; }
-    .note-item span { color:#ddd; font-size:14px; }
-    .note-actions { display:flex; gap:6px; align-items:center; }
   </style>
 </head>
 <body>
