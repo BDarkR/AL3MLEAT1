@@ -183,3 +183,60 @@ body{
   .title{font-size:20px}
   .input.small{max-width:100%}
 }
+/* ---------------------------
+   Select that looks like input
+   Usage: <select class="small select-input-like"> ... </select>
+   --------------------------- */
+select.small.select-input-like {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* match .input look */
+  display: inline-block;
+  width: 100%;
+  min-width: 120px;
+  height: 40px;                    /* same visual height as inputs */
+  padding: 8px 44px 8px 12px;      /* room for arrow on the right */
+  color: #ddd;
+  background-color: #222;          /* same as .input background */
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  /* subtle arrow (SVG, inline) positioned on the right to match screenshot */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%239b9b9b' stroke-width='2'><path d='M4 7l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px 14px;
+
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+
+/* focus/hover visual to match input focus feel */
+select.small.select-input-like:focus,
+select.small.select-input-like:hover {
+  border-color: rgba(39,174,96,0.8);
+  box-shadow: 0 0 0 4px rgba(39,174,96,0.06);
+  outline: none;
+  background-color: #222; /* keep same dark bg */
+}
+
+/* disabled state */
+select.small.select-input-like:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* hide native arrow in IE/Edge */
+select.small.select-input-like::-ms-expand { display: none; }
+
+/* Firefox inner reset */
+select.small.select-input-like::-moz-focus-inner { border: 0; }
+
+/* If your layout is RTL (dir="rtl") but you prefer arrow on the left,
+   swap padding and background-position accordingly. The current rules
+   place the arrow on the right to match your screenshot. */
