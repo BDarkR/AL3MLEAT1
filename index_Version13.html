@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>تقرير العمليات - الميناء</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --accent:#27ae60; --muted:#9b9b9b; }
+    body{font-family:'Cairo',system-ui,Arial,sans-serif;background:#0b0b0b;color:#eee;padding:18px;}
+    .card{background:linear-gradient(#1a1a1a,#212121);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,0.6);max-width:1100px;margin:0 auto}
+
+    .section { margin-bottom:18px; border-top:1px dashed rgba(255,255,255,0.03); padding-top:12px; }
+    .row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+    .row label { min-width:160px; font-size:14px; color:#ddd; }
+    .row .input { flex:1; margin-bottom:0; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.04); background:#222; color:#ddd }
+    .add-btn { background:transparent; color:var(--accent); border:1px dashed rgba(39,174,96,0.35); padding:6px 10px; border-radius:8px; cursor:pointer; }
+    .controls { display:flex; gap:8px; margin-top:10px; }
+    .report-output { width:100%; min-height:220px; resize:vertical; padding:12px; background:#222; color:#ddd; border-radius:8px; border:1px solid rgba(255,255,255,0.03); white-space:pre-wrap; direction:rtl; }
+    .del-btn { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#ff6b6b; padding:6px 8px; border-radius:8px; cursor:pointer; font-weight:700; }
+    .edit-btn { background:transparent; border:1px dashed rgba(255,255,255,0.06); color:#ffd36b; padding:6px 8px; border-radius:8px; cursor:pointer; font-weight:700; }
+    .hide-btn { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#9b9b9b; padding:6px 8px; border-radius:8px; cursor:pointer; font-weight:700; }
+
+    .role.duplicate { border-color:#e74c3c !important; color:#ffb3b3 !important; background:rgba(231,76,60,0.04); }
+    .row label.duplicate-label { color:#ff6b6b !important; }
+    #dupWarning { color:#ff6b6b; display:none; margin-top:8px; font-size:13px; }
+
+    .player-wrap { display:flex; gap:6px; align-items:center; }
+    .playerChk { width:18px; height:18px; cursor:pointer; }
+    .playerMention { width:160px; padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.04); background:#222; color:#ddd; display:none; font-size:13px; }
+
+    /* header buttons style */
+    .top-nav { padding:6px 0 18px; }
+    .btn-pill {
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:6px 14px;
+      height:34px; line-height:1; font-size:14px; border-radius:18px; font-weight:700;
+    }
+    .btn-pill.outline { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+    .btn-pill.filled { background:var(--accent); color:#fff; border:1px solid var(--accent); }
+    .small-note{ color:var(--muted); font-size:13px; margin-bottom:8px; text-align:right; }
+
+    /* green heading */
+    .green-heading { color: var(--accent); font-size:15px; font-weight:700; margin:0 0 8px; display:block; }
+
+    /* hidden-row: keep the row and the hide/show button visible, hide the input controls */
+    .hidden-row { opacity:0.45; }
+    .hidden-row .role, .hidden-row .player-wrap { display:none !important; }
+    .hidden-row label { color:#8f8f8f; }
+
+    /* notes area */
+    .note-controls { display:flex; gap:8px; align-items:center; width:100%; }
+    .note-controls select, .note-controls input { padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:#222; color:#ddd; }
+    .note-controls .small { width:140px; }
+    .note-item { padding:6px 8px; border-radius:6px; background:rgba(255,255,255,0.02); display:flex; justify-content:space-between; align-items:center; }
+    .note-item span { color:#ddd; font-size:14px; }
+    .note-actions { display:flex; gap:6px; align-items:center; }
+  </style>
+</head>
+<body>
+  <div class="top-nav">
+    <nav>
+      <div class="btn-pill outline" aria-hidden="true">تقرير العمليات الميناء</div>
+      <a class="btn-pill filled" href="#" target="_blank" rel="noopener noreferrer">العودة إلى الموقع</a>
+    </nav>
+  </div>
+
+  <section class="card">
+    <h1 class="title">تقرير العـــمـــلــيــات في الميناء</h1>
+    <p class="small-note">املأ الحقول ثم اضغط "انشاء التقرير"</p>
+
+    <form id="reportForm" onsubmit="return false;">
+      <div class="section">
+        <div class="row">
+          <label>وقت استلام الشفت</label>
+          <input id="shiftTimeDisplay" class="input" value="6 صباحا" readonly />
+        </div>
+
+        <div class="row">
+          <label>العمليات (منشن)</label>
+          <input id="operations" class="input" placeholder="@" />
+        </div>
+
+        <div class="row">
+          <label>نائب العمليات (منشن)</label>
+          <input id="opsDeputy" class="input" placeholder="@" />
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="green-heading">القيادة العامة</h3>
+        <div class="row"><label>قائد امن المنشأت</label><input class="input role" data-role="قائد امن المنشأت" value="H-000" /></div>
+        <div class="row"><label>نائب قائد امن المنشأت</label><input class="input role" data-role="نائب قائد امن المنشأت" value="H-000" /></div>
+      </div>
+
+      <div class="section" id="leadershipSection">
+        <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">القيادة (يمكن إضافة أكثر)</h3>
+        <div id="leadershipList">
+          <div class="row"><label>قيادة 1</label><input class="input role" data-role="قيادة 1" value="H-000" /></div>
+          <div class="row"><label>قيادة 2</label><input class="input role" data-role="قيادة 2" value="H-000" /></div>
+        </div>
+        <button type="button" class="add-btn" data-target="leadershipList">＋ إضافة قيادة</button>
+
+        <div style="margin-top:10px;">
+          <div class="row">
+            <label>ضابط خفر</label>
+            <input id="dhInput" class="input role" data-role="ضابط خفر" value="H-000" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="unitsSection">
+        <h3 style="margin:0 0 8px;color:var(--accent);font-size:16px">الوحدات (قابلة للإضافة)</h3>
+
+        <div>
+          <h4 class="green-heading">ردع (قابل للإضافة)</h4>
+          <div id="radaList">
+            <div class="row"><label>ردع 1</label><input class="input role" data-role="ردع 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>ردع 2</label><input class="input role" data-role="ردع 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+          </div>
+          <button type="button" class="add-btn" data-target="radaList">＋ إضافة ردع</button>
+        </div>
+
+        <div style="margin-top:12px;">
+          <h4 class="green-heading">برق (قابل للإضافة)</h4>
+          <div id="barqList">
+            <div class="row"><label>برق 1</label><input class="input role" data-role="برق 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>برق 2</label><input class="input role" data-role="برق 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+          </div>
+          <button type="button" class="add-btn" data-target="barqList">＋ إضافة برق</button>
+        </div>
+
+        <div style="margin-top:12px;">
+          <h4 class="green-heading">سهم</h4>
+          <div id="sahmList">
+            <div class="row"><label>سهم 1</label><input class="input role" data-role="سهم 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>سهم 2</label><input class="input role" data-role="سهم 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+          </div>
+        </div>
+
+        <div style="margin:12px 0;">
+          <h4 class="green-heading">مشرفو الأمن</h4>
+          <div id="securitySupervisors">
+            <div class="row"><label>مشرف أمن 1</label><input class="input role" data-role="مشرف أمن 1" value="H-000"/></div>
+            <div class="row"><label>أمن 1</label><input class="input role" data-role="أمن 1" value="H-000"/></div>
+            <div class="row"><label>مساندة أمن 1</label><input class="input role" data-role="مساندة أمن 1" value="H-000"/></div>
+
+            <div class="row spacer" aria-hidden="true"><div style="flex:1;height:10px"></div></div>
+
+            <div class="row"><label>مشرف أمن 2</label><input class="input role" data-role="مشرف أمن 2" value="H-000"/></div>
+            <div class="row"><label>أمن 2</label><input class="input role" data-role="أمن 2" value="H-000"/></div>
+          </div>
+        </div>
+
+        <div style="margin:12px 0;">
+          <h4 class="green-heading">حرة <span style="color:#9b9b9b;font-size:13px;margin-left:8px">(قابل للإضافة)</span></h4>
+          <div id="huraList">
+            <div class="row"><label>حرة 1</label><input class="input role" data-role="حرة 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>حرة 2</label><input class="input role" data-role="حرة 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>حرة 3</label><input class="input role" data-role="حرة 3" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>حرة 4</label><input class="input role" data-role="حرة 4" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>حرة 5</label><input class="input role" data-role="حرة 5" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+          </div>
+          <button type="button" class="add-btn" data-target="huraList">＋ إضافة حرة</button>
+        </div>
+
+        <div style="margin:12px 0;">
+          <h4 class="green-heading">صقر (قابل للإضافة)</h4>
+          <div id="saqrList">
+            <div class="row"><label>صقر 1</label><input class="input role" data-role="صقر 1" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+            <div class="row"><label>صقر 2</label><input class="input role" data-role="صقر 2" value="H-000"/><button type="button" class="hide-btn" data-action="hide">اخفاء</button></div>
+          </div>
+          <button type="button" class="add-btn" data-target="saqrList">＋ إضافة صقر</button>
+        </div>
+
+        <div style="margin-top:12px;">
+          <div class="row"><label>شرطة عسكرية</label><input class="input role" data-role="شرطة عسكرية" value="H-000"/></div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <div id="coastalList">
+            <div class="row"><label>عين 1</label><input class="input role" data-role="عين 1" value="H-000"/></div>
+            <div class="row"><label>ساحل 1</label><input class="input role" data-role="ساحل 1" value="H-000"/></div>
+            <div class="row"><label>سجن 1</label><input class="input role" data-role="سجن 1" value="H-000"/></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="specialForcesSection">
+        <h3 style="margin:0 0 8px;color:var(--accent);font-size:16px">القوات الخاصة</h3>
+        <div id="specialForcesList">
+          <div class="row"><label>قائد فرقة القوات الخاصة</label><input class="input role" data-role="قائد فرقة القوات الخاصة" value="H-000"/></div>
+          <div class="row"><label>نائب الفرقة</label><input class="input role" data-role="نائب الفرقة" value="H-000"/></div>
+          <div class="row"><label>حزم 1</label><input class="input role" data-role="حزم 1" value="H-000"/></div>
+          <div class="row"><label>رمح 1</label><input class="input role" data-role="رمح 1" value="H-000"/></div>
+        </div>
+      </div>
+
+      <div class="section" id="criminalSection">
+        <h3 style="margin:0 0 8px;color:var(--accent);font-size:16px">البحث الجنائي</h3>
+        <div id="criminalList">
+          <div class="row"><label>قائد فرقة البحث الجنائي</label><input class="input role" data-role="قائد فرقة البحث الجنائي" value="H-000"/></div>
+          <div class="row"><label>نائب الفرقة</label><input class="input role" data-role="نائب الفرقة" value="H-000"/></div>
+          <div class="row"><label>جنائي 1</label><input class="input role" data-role="جنائي 1" value="H-000"/></div>
+          <div class="row"><label>جنائي 2</label><input class="input role" data-role="جنائي 2" value="H-000"/></div>
+        </div>
+      </div>
+
+      <div class="section" id="securitySection">
+        <h3 class="green-heading">الأمن والحماية</h3>
+        <div id="securityList">
+          <div class="row"><label>حماية 1</label><input class="input role" data-role="حماية 1" value="H-000"/></div>
+          <div class="row"><label>حماية 2</label><input class="input role" data-role="حماية 2" value="H-000"/></div>
+        </div>
+      </div>
+
+      <!-- notes (at end) -->
+      <div class="section" id="notesSection">
+        <div class="row">
+          <label class="green-heading">ملاحظة رئيسية</label>
+          <input id="noteField" class="input" value="مساندة الطوارئ" />
+        </div>
+
+        <div class="row">
+          <label>إضافة بند للملاحظة</label>
+          <div class="note-controls" style="flex:1">
+            <input id="noteCode" class="input small" placeholder="مثال: H-914" />
+            <input id="noteCount" class="input small" placeholder="كم" />
+            <select id="noteType" class="small">
+              <option value="">نوع</option><option value="حرة">حرة</option><option value="سهم">سهم</option><option value="صقر">صقر</option><option value="برق">برق</option><option value="ردع">ردع</option>
+            </select>
+            <button type="button" id="addNoteBtn" class="add-btn">＋ إضافة</button>
+          </div>
+        </div>
+
+        <div class="row" style="align-items:flex-start;">
+          <label>ملاحظات مضافة</label>
+          <div id="notesList" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+      </div>
+
+      <div id="dupWarning">هناك أكواد مكررة — تم تمييزها باللون الأحمر</div>
+
+      <div class="controls">
+        <button type="button" id="buildReport" class="btn primary" style="flex:1">انشاء التقرير</button>
+        <button type="button" id="copyReport" class="btn secondary" style="width:150px;display:none">نسخ التقرير</button>
+      </div>
+
+      <div style="margin-top:12px;">
+        <textarea id="reportOutput" class="report-output" placeholder="سيظهر التقرير هنا بعد الضغط"></textarea>
+      </div>
+    </form>
+  </section>
+
+  <script>
+    // lists where hide-btn (not delete) is used
+    const HIDE_LIST_IDS = ['huraList','saqrList','barqList','radaList','sahmList'];
+
+    const EXCLUDED_LABELS = ['قائد امن المنشأت','نائب قائد امن المنشأت','وقت استلام الشفت'];
+    const EXCLUDE_PREFIXES = ['قيادة'];
+    const EXCLUDED_INPUT_IDS = ['operations','opsDeputy','shiftTimeDisplay','noteField','noteCode','noteCount','noteType'];
+
+    // add player controls if allowed for a row
+    function addPlayerWrapToRowIfAllowed(row) {
+      if (!row || !(row instanceof HTMLElement)) return;
+      if (row.querySelector('.player-wrap')) return;
+      const lbl = row.querySelector('label');
+      const labelText = lbl ? (lbl.textContent||'').trim() : '';
+      // skip when inputs in row include excluded IDs
+      const inputs = Array.from(row.querySelectorAll('input'));
+      for (const inp of inputs) if (inp.id && EXCLUDED_INPUT_IDS.includes(inp.id)) return;
+      if (EXCLUDED_LABELS.includes(labelText)) return;
+      for (const p of EXCLUDE_PREFIXES) if (labelText.startsWith(p)) return;
+      if (labelText === 'العمليات' || labelText === 'نائب العمليات') return;
+
+      const playerWrap = document.createElement('div');
+      playerWrap.className = 'player-wrap';
+      const chk = document.createElement('input');
+      chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
+      const span = document.createElement('span'); span.className='playerLabel'; span.textContent='لاعب';
+      const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
+      playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
+
+      // insert before hide/show/delete button if present
+      const btn = row.querySelector('.hide-btn, .del-btn');
+      if (btn) row.insertBefore(playerWrap, btn);
+      else row.appendChild(playerWrap);
+
+      bindPlayerToggle(row);
+    }
+
+    function bindPlayerToggle(row) {
+      const chk = row.querySelector('.playerChk');
+      const mention = row.querySelector('.playerMention');
+      const codeInput = row.querySelector('.role');
+      if (!chk || !mention) return;
+      if (chk.dataset.bound==='1') return;
+      chk.addEventListener('change', ()=>{
+        if (chk.checked) mention.style.display='inline-block';
+        else mention.style.display='none';
+        // when player is checked, remove duplicate highlight from code input
+        if (!chk.checked && codeInput) checkDuplicates();
+        else if (chk.checked && codeInput) codeInput.classList.remove('duplicate');
+      });
+      mention.addEventListener('input', checkDuplicates);
+      chk.dataset.bound='1';
+    }
+
+    function attachRoleListener(input) {
+      if (!input) return;
+      if (input.dataset.listenerAttached==='1') return;
+      input.addEventListener('input', checkDuplicates);
+      input.dataset.listenerAttached='1';
+    }
+
+    // create row for dynamic addition
+    // Now: any newly created row gets a visible delete button (to remove that new entry).
+    // For hide-lists we add both hide and delete buttons (delete removes row completely).
+    function createRow(labelText,dataRole,targetId){
+      const row = document.createElement('div'); row.className='row';
+      const label = document.createElement('label'); label.textContent = labelText;
+      const input = document.createElement('input'); input.className='input role'; input.setAttribute('data-role',dataRole); input.value='H-000';
+
+      if (HIDE_LIST_IDS.includes(targetId)) {
+        const hideBtn = document.createElement('button'); hideBtn.type='button'; hideBtn.className='hide-btn'; hideBtn.textContent='اخفاء';
+        hideBtn.addEventListener('click', ()=> toggleHideRow(row, hideBtn));
+        const del = document.createElement('button'); del.type='button'; del.className='del-btn'; del.textContent='حذف';
+        del.addEventListener('click', ()=> { row.remove(); checkDuplicates(); });
+        // append: label, input, playerWrap will be inserted before these, then hide and delete
+        row.appendChild(label); row.appendChild(input); row.appendChild(hideBtn); row.appendChild(del);
+      } else {
+        const del = document.createElement('button'); del.type='button'; del.className='del-btn'; del.textContent='حذف';
+        del.addEventListener('click', ()=> { row.remove(); checkDuplicates(); });
+        row.appendChild(label); row.appendChild(input); row.appendChild(del);
+      }
+      attachRoleListener(input);
+      addPlayerWrapToRowIfAllowed(row);
+      return row;
+    }
+
+    // bind add buttons
+    document.querySelectorAll('.add-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const target = btn.getAttribute('data-target');
+        const list = document.getElementById(target);
+        if (!list) return;
+        const existing = list.querySelectorAll('.row').length;
+        const index = existing + 1;
+        const firstLabel = list.querySelector('.row label');
+        const base = firstLabel ? firstLabel.textContent.split(' ')[0] || 'عنصر' : 'عنصر';
+        const labelText = base + ' ' + index;
+        const newRow = createRow(labelText, labelText, target);
+        list.appendChild(newRow);
+        // ensure new buttons are bound
+        bindRowHideButtons();
+        bindStaticRowDeleteButtons();
+        checkDuplicates();
+      });
+    });
+
+    // hide/show toggle: add/remove hidden-row class and dataset.hidden
+    function toggleHideRow(row, btn){
+      if (!row || !btn) return;
+      const wasHidden = row.dataset.hidden==='true';
+      if (wasHidden) {
+        row.dataset.hidden='false'; row.classList.remove('hidden-row'); btn.textContent='اخفاء';
+      } else {
+        row.dataset.hidden='true'; row.classList.add('hidden-row'); btn.textContent='اظهار';
+      }
+      checkDuplicates();
+    }
+
+    function bindRowHideButtons(){
+      document.querySelectorAll('#huraList .hide-btn, #saqrList .hide-btn, #barqList .hide-btn, #radaList .hide-btn, #sahmList .hide-btn')
+        .forEach(btn=>{
+          if (btn.dataset.boundHide==='1') return;
+          const row = btn.closest('.row');
+          btn.addEventListener('click', ()=> toggleHideRow(row, btn));
+          btn.dataset.boundHide='1';
+        });
+    }
+
+    function bindStaticRowDeleteButtons(){
+      // bind delete for any .del-btn (including newly created ones)
+      document.querySelectorAll('.row > .del-btn').forEach(btn=>{
+        if (btn.dataset.boundDelete==='1') return;
+        btn.addEventListener('click', ()=> {
+          const row = btn.closest('.row');
+          if (row) row.remove();
+          checkDuplicates();
+        });
+        btn.dataset.boundDelete='1';
+      });
+    }
+
+    // duplicate check (ignore hidden rows and rows whose player-checkbox is checked)
+    function checkDuplicates(){
+      const inputs = Array.from(document.querySelectorAll('.role'));
+      const map = new Map();
+      inputs.forEach(inp=>{
+        const row = inp.closest('.row');
+        if (!row) return;
+        if (row.dataset.hidden==='true' || getComputedStyle(row).display==='none') return;
+        const playerChk = row.querySelector('.playerChk');
+        if (playerChk && playerChk.checked) return;
+        const v = (inp.value||'').trim().toUpperCase();
+        if (!v || v==='H-000' || v.startsWith('@')) return;
+        if (!map.has(v)) map.set(v,[]);
+        map.get(v).push({inp,row});
+      });
+
+      document.querySelectorAll('.role').forEach(inp=>{
+        inp.classList.remove('duplicate');
+        const lbl = inp.parentElement && inp.parentElement.querySelector('label');
+        if (lbl) lbl.classList.remove('duplicate-label');
+      });
+      document.getElementById('dupWarning').style.display='none';
+
+      let dupFound=false;
+      map.forEach(arr=>{
+        if (arr.length>1) {
+          dupFound=true;
+          arr.forEach(obj=>{
+            obj.inp.classList.add('duplicate');
+            const lbl = obj.row.querySelector('label');
+            if (lbl) lbl.classList.add('duplicate-label');
+          });
+        }
+      });
+      if (dupFound) document.getElementById('dupWarning').style.display='block';
+    }
+
+    // notes handling
+    const addNoteBtn = document.getElementById('addNoteBtn');
+    const notesList = document.getElementById('notesList');
+
+    function createNoteItem(code,count,type){
+      const wrapper = document.createElement('div'); wrapper.className='note-item';
+      wrapper.dataset.code = code||''; wrapper.dataset.count = count||''; wrapper.dataset.type = type||''; wrapper.dataset.edited='false';
+      const txt = document.createElement('span'); txt.textContent = formatNoteText(code,count,type,false);
+      const actions = document.createElement('div'); actions.className='note-actions';
+      const edit = document.createElement('button'); edit.type='button'; edit.className='edit-btn'; edit.textContent='تعديل';
+      edit.addEventListener('click', ()=> enterEditMode(wrapper,txt));
+      const del = document.createElement('button'); del.type='button'; del.className='del-btn'; del.textContent='حذف';
+      del.addEventListener('click', ()=> wrapper.remove());
+      actions.appendChild(edit); actions.appendChild(del);
+      wrapper.appendChild(txt); wrapper.appendChild(actions);
+      return wrapper;
+    }
+
+    function formatNoteText(code,count,type,edited){
+      if (!code && !count && !type) return '';
+      let parts=[]; if (code) parts.push(code+':'); if (count) parts.push(count); if (type) parts.push(type);
+      let res = parts.join(' '); if (edited) res += ' (edited)'; return res;
+    }
+
+    function enterEditMode(wrapper,txtSpan){
+      const code = wrapper.dataset.code||''; const count = wrapper.dataset.count||''; const type = wrapper.dataset.type||'';
+      const editor = document.createElement('div'); editor.style.display='flex'; editor.style.gap='8px'; editor.style.alignItems='center';
+      const codeIn = document.createElement('input'); codeIn.className='input small'; codeIn.value=code; codeIn.placeholder='H-914';
+      const countIn = document.createElement('input'); countIn.className='input small'; countIn.value=count; countIn.placeholder='كم';
+      const typeSel = document.createElement('select'); typeSel.className='small';
+      ['','حرة','سهم','صقر','برق','ردع'].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v||'نوع'; if (v===type) o.selected=true; typeSel.appendChild(o);});
+      const save = document.createElement('button'); save.type='button'; save.className='add-btn'; save.textContent='حفظ';
+      save.addEventListener('click', ()=> {
+        wrapper.dataset.code = codeIn.value.trim(); wrapper.dataset.count = countIn.value.trim(); wrapper.dataset.type = typeSel.value; wrapper.dataset.edited='true';
+        txtSpan.textContent = formatNoteText(wrapper.dataset.code,wrapper.dataset.count,wrapper.dataset.type,true);
+        editor.replaceWith(txtSpan);
+      });
+      const cancel = document.createElement('button'); cancel.type='button'; cancel.className='del-btn'; cancel.textContent='إلغاء';
+      cancel.addEventListener('click', ()=> editor.replaceWith(txtSpan));
+      txtSpan.replaceWith(editor); editor.appendChild(codeIn); editor.appendChild(countIn); editor.appendChild(typeSel); editor.appendChild(save); editor.appendChild(cancel);
+    }
+
+    addNoteBtn.addEventListener('click', ()=>{
+      const code = document.getElementById('noteCode').value.trim();
+      const count = document.getElementById('noteCount').value.trim();
+      const type = document.getElementById('noteType').value;
+      if (!code && !count && !type) return;
+      const item = createNoteItem(code,count,type);
+      notesList.appendChild(item);
+      document.getElementById('noteCode').value=''; document.getElementById('noteCount').value='';
+    });
+
+    // append from container, skip hidden rows
+    function appendFromContainer(containerId,out,addBlankAfter=true){
+      const container = document.getElementById(containerId); if (!container) return;
+      const rows = container.querySelectorAll('.row');
+      rows.forEach(row=>{
+        if (row.classList && row.classList.contains('spacer')) { if (addBlankAfter) out.push(''); return; }
+        if (row.dataset.hidden==='true' || getComputedStyle(row).display==='none') return;
+        const roleName = (row.querySelector('label')||{}).textContent || '';
+        const codeInput = row.querySelector('.role');
+        const playerChk = row.querySelector('.playerChk');
+        const mention = row.querySelector('.playerMention');
+        let val = 'H-000';
+        if (playerChk && playerChk.checked) {
+          const raw = (mention && mention.value)?mention.value.trim():'';
+          if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@';
+        } else if (codeInput) {
+          val = (codeInput.value && codeInput.value.trim())? codeInput.value.trim() : 'H-000';
+        }
+        if (roleName) out.push(roleName + ' : ' + val);
+      });
+      if (addBlankAfter) out.push('');
+    }
+
+    function appendCoastalWithGaps(out){
+      const container = document.getElementById('coastalList'); if (!container) return;
+      const rows = Array.from(container.querySelectorAll('.row'));
+      const ayn = rows.filter(r => (r.querySelector('label')||{}).textContent.trim().startsWith('عين'));
+      const sah = rows.filter(r => (r.querySelector('label')||{}).textContent.trim().startsWith('ساحل'));
+      const sijn = rows.filter(r => (r.querySelector('label')||{}).textContent.trim().startsWith('سجن'));
+      ayn.forEach(r => {
+        if (r.dataset.hidden==='true') return;
+        const roleName = (r.querySelector('label')||{}).textContent || '';
+        const codeInput = r.querySelector('.role'); const playerChk = r.querySelector('.playerChk'); const mention = r.querySelector('.playerMention');
+        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000';
+        out.push(roleName + ' : ' + val);
+      });
+      if (ayn.length) out.push('');
+      sah.forEach(r => {
+        if (r.dataset.hidden==='true') return;
+        const roleName = (r.querySelector('label')||{}).textContent || '';
+        const codeInput = r.querySelector('.role'); const playerChk = r.querySelector('.playerChk'); const mention = r.querySelector('.playerMention');
+        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000';
+        out.push(roleName + ' : ' + val);
+      });
+      if (sah.length) out.push('');
+      sijn.forEach(r => {
+        if (r.dataset.hidden==='true') return;
+        const roleName = (r.querySelector('label')||{}).textContent || '';
+        const codeInput = r.querySelector('.role'); const playerChk = r.querySelector('.playerChk'); const mention = r.querySelector('.playerMention');
+        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000';
+        out.push(roleName + ' : ' + val);
+      });
+    }
+
+    // build report (unchanged)
+    function buildReportText(){
+      checkDuplicates();
+      const out=[]; const shiftLabel='الميناء'; const timeLabel='6 صباحا';
+      out.push('تقرير العـــمـــلــيــات في ' + shiftLabel); out.push(''); out.push('تم استلام عمليات ' + shiftLabel + ' في تمام الساعه ' + timeLabel); out.push('');
+      const rawOps = (document.getElementById('operations').value||'').trim();
+      const rawOpsDeputy = (document.getElementById('opsDeputy').value||'').trim();
+      const operations = rawOps ? (rawOps.startsWith('@')?rawOps:('@'+rawOps)) : '@';
+      const opsDeputy = rawOpsDeputy ? (rawOpsDeputy.startsWith('@')?rawOpsDeputy:('@'+rawOpsDeputy)) : '@';
+      out.push('العمليات : ' + operations); out.push('نائب العمليات : ' + opsDeputy); out.push('');
+
+      const leader1 = document.querySelector('input[data-role="قائد امن المنشأت"]');
+      const leader2 = document.querySelector('input[data-role="نائب قائد امن المنشأت"]');
+      if (leader1) out.push(leader1.getAttribute('data-role') + ' : ' + ((leader1.value && leader1.value.trim()) ? leader1.value.trim() : 'H-000'));
+      if (leader2) out.push(leader2.getAttribute('data-role') + ' : ' + ((leader2.value && leader2.value.trim()) ? leader2.value.trim() : 'H-000'));
+      out.push('');
+
+      appendFromContainer('leadershipList', out);
+      const dh = document.querySelector('input[data-role="ضابط خفر"]');
+      if (dh) { const row = dh.closest('.row'); const playerChk = row?row.querySelector('.playerChk'):null; const mention = row?row.querySelector('.playerMention'):null; let val = (dh.value && dh.value.trim())?dh.value.trim():'H-000'; if (playerChk && playerChk.checked) { const raw = (mention && mention.value)?mention.value.trim():''; val = raw? (raw.startsWith('@')?raw:('@'+raw)) : '@'; } out.push(dh.getAttribute('data-role') + ' : ' + val); out.push(''); }
+
+      appendFromContainer('radaList', out);
+      appendFromContainer('barqList', out);
+      appendFromContainer('sahmList', out);
+
+      appendFromContainer('securitySupervisors', out);
+      appendFromContainer('huraList', out);
+      appendFromContainer('saqrList', out);
+
+      const police = document.querySelector('input[data-role="شرطة عسكرية"]');
+      if (police) { const row = police.closest('.row'); const playerChk = row?row.querySelector('.playerChk'):null; const mention = row?row.querySelector('.playerMention'):null; let val = (police.value && police.value.trim())?police.value.trim():'H-000'; if (playerChk && playerChk.checked) { const raw = (mention && mention.value)?mention.value.trim():''; val = raw? (raw.startsWith('@')?raw:('@'+raw)) : '@'; } out.push(police.getAttribute('data-role') + ' : ' + val); out.push(''); }
+
+      out.push('البحث الجنائي'); appendFromContainer('criminalList', out);
+      out.push(''); out.push('القوات الخاصة'); appendFromContainer('specialForcesList', out);
+      out.push(''); out.push('الأمن والحماية'); appendFromContainer('securityList', out);
+
+      appendCoastalWithGaps(out);
+
+      const noteItems = Array.from(document.querySelectorAll('#notesList .note-item'));
+      if (noteItems.length>0) {
+        const mainNote = (document.getElementById('noteField').value||'').trim();
+        out.push(''); out.push('ملاحظات التقرير :');
+        if (mainNote) out.push(mainNote + ' :');
+        noteItems.forEach(it=>{
+          const code = it.dataset.code||''; const count = it.dataset.count||''; const type = it.dataset.type||''; const edited = it.dataset.edited==='true';
+          let lineParts=[]; if (code) lineParts.push(code+':'); if (count) lineParts.push(count); if (type) lineParts.push(type);
+          let line = lineParts.join(' ');
+          if (line) { if (edited) line += ' (edited)'; out.push(line); }
+        });
+      }
+      while (out.length && out[out.length-1]==='') out.pop();
+      return out.join('\n');
+    }
+
+    // copy/report buttons
+    const buildBtn = document.getElementById('buildReport');
+    const copyBtn = document.getElementById('copyReport');
+    const output = document.getElementById('reportOutput');
+    buildBtn.addEventListener('click', ()=> {
+      const text = buildReportText();
+      output.value = text;
+      copyBtn.style.display='inline-block';
+      output.focus(); output.select();
+    });
+    copyBtn.addEventListener('click', async ()=>{
+      if (!output.value) return alert('لا يوجد تقرير لنسخه');
+      try {
+        await navigator.clipboard.writeText(output.value);
+        copyBtn.textContent='تم النسخ ✓';
+        setTimeout(()=>copyBtn.textContent='نسخ التقرير',1500);
+      } catch(e) { alert('فشل النسخ — جرّب يدوياً'); }
+    });
+
+    // initial binding
+    document.querySelectorAll('.row').forEach(r=>{
+      const roleInp = r.querySelector('.role'); if (roleInp) attachRoleListener(roleInp);
+    });
+    // add player-wraps to eligible rows
+    document.querySelectorAll('.row').forEach(r => addPlayerWrapToRowIfAllowed(r));
+    bindRowHideButtons();
+    bindStaticRowDeleteButtons();
+    checkDuplicates();
+
+    // observe dynamic changes (new rows)
+    const observer = new MutationObserver(muts=>{
+      muts.forEach(m=>{
+        m.addedNodes.forEach(node=>{
+          if (!(node instanceof HTMLElement)) return;
+          node.querySelectorAll && node.querySelectorAll('.role').forEach(attachRoleListener);
+          node.querySelectorAll && node.querySelectorAll('.row').forEach(r=>{
+            addPlayerWrapToRowIfAllowed(r);
+            bindPlayerToggle(r);
+          });
+          bindRowHideButtons(); bindStaticRowDeleteButtons();
+        });
+      });
+    });
+    observer.observe(document.body,{childList:true,subtree:true});
+  </script>
+</body>
+</html>
