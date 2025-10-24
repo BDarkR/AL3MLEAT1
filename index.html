@@ -288,7 +288,7 @@
       playerWrap.className = 'player-wrap';
       const chk = document.createElement('input');
       chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
-      const span = document.createElement('span'); span.className='playerLabel'; span.textContent='لاعب';
+      const span = document.createElement('span'); span.className='playerLabel'; span.textContent='لاعب معتمد';
       const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
       playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
 
@@ -466,7 +466,7 @@
       // player controls for note (local to the note)
       const playerWrap = document.createElement('div'); playerWrap.className='player-wrap';
       const chk = document.createElement('input'); chk.type='checkbox'; chk.className='playerChk';
-      const lbl = document.createElement('span'); lbl.className='playerLabel'; lbl.textContent='لاعب';
+      const lbl = document.createElement('span'); lbl.className='playerLabel'; lbl.textContent='لاعب معتمد';
       const mention = document.createElement('input'); mention.type='text'; mention.className='playerMention'; mention.placeholder='@player';
       mention.style.display='none';
 
