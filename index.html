@@ -64,7 +64,6 @@
   </style>
 </head>
 <body>
-  <!-- الخلفية (ضع 1.png في نفس المجلد) -->
   <div class="bg-mark" aria-hidden="true"></div>
 
   <div class="top-nav">
@@ -102,7 +101,6 @@
         <div class="row"><label>نائب قائد امن المنشأت</label><input class="input role" data-role="نائب قائد امن المنشأت" value="H-000" /></div>
       </div>
 
-      <!-- القيادة (قابل للإضافة) -->
       <div class="section" id="leadershipSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">القيادة (قابل للإضافة)</h3>
         <div id="leadershipList">
@@ -119,7 +117,6 @@
         </div>
       </div>
 
-      <!-- ردع -->
       <div class="section" id="radaSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">ردع (قابل للإضافة)</h3>
         <div id="radaList">
@@ -129,7 +126,6 @@
         <button type="button" class="add-btn" data-target="radaList">＋ إضافة ردع</button>
       </div>
 
-      <!-- برق -->
       <div class="section" id="barqSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">برق (قابل للإضافة)</h3>
         <div id="barqList">
@@ -139,7 +135,6 @@
         <button type="button" class="add-btn" data-target="barqList">＋ إضافة برق</button>
       </div>
 
-      <!-- سهم -->
       <div class="section" id="sahmSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">سهم</h3>
         <div id="sahmList">
@@ -148,7 +143,6 @@
         </div>
       </div>
 
-      <!-- مسؤولين البوابات / مشرفو الأمن -->
       <div class="section" id="securitySupervisorsSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">مسؤولين البوابات</h3>
         <div id="securitySupervisors">
@@ -163,8 +157,7 @@
         </div>
       </div>
 
-      <!-- حرة -->
-       <div class="section" id="securitySupervisorsSection">
+      <div class="section" id="huraSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">حرة (قابل للإضافة)</h3>
         <div id="huraList">
           <div class="row"><label>حرة 1</label><input class="input role" data-role="حرة 1" value="H-000"/><button type="button" class="hide-btn">اخفاء</button></div>
@@ -176,7 +169,6 @@
         <button type="button" class="add-btn" data-target="huraList">＋ إضافة حرة</button>
       </div>
 
-      <!-- صقر -->
       <div class="section" id="saqrSection">
         <h3 style="color:var(--accent);font-size:16px;margin:0 0 8px">صقر (قابل للإضافة)</h3>
         <div id="saqrList">
@@ -218,9 +210,10 @@
         </div>
       </div>
 
-     <div class="section" id="criminalSection">
+      <!-- corrected security section -->
+      <div class="section" id="securitySection">
         <h3 style="margin:0 0 8px;color:var(--accent);font-size:16px">الأمن والحماية</h3>
-        <div id="criminalList">
+        <div id="securityList">
           <div class="row"><label>حماية 1</label><input class="input role" data-role="حماية 1" value="H-000"/></div>
           <div class="row"><label>حماية 2</label><input class="input role" data-role="حماية 2" value="H-000"/></div>
         </div>
@@ -235,11 +228,11 @@
 
         <div class="row">
           <label>إضافة بند للملاحظة</label>
-          <div class="note-controls" style="flex:1">
+          <div class="note-controls" style="flex:1;display:flex;gap:8px;align-items:center">
             <input id="noteCode" class="input small" placeholder="مثال: H-018" />
             <input id="noteCount" class="input small" placeholder="رقم التوجيه" />
             <select id="noteType" class="small">
-              <option value="">التوجيهات</option><option value="حرة">حرة</option><option value="سهم">سهم</option><option value="صقر">صقر</option><option value="برق">برق</option><option value="ردع">ردع</option>
+              <option value="">نوع</option><option value="حرة">حرة</option><option value="سهم">سهم</option><option value="صقر">صقر</option><option value="برق">برق</option><option value="ردع">ردع</option>
             </select>
             <button type="button" id="addNoteBtn" class="add-btn">＋ إضافة</button>
           </div>
@@ -272,44 +265,40 @@
     const EXCLUDE_PREFIXES = ['قيادة'];
     const EXCLUDED_INPUT_IDS = ['operations','opsDeputy','shiftTimeDisplay','noteField','noteCode','noteCount','noteType'];
 
-   // استبدل دالة addPlayerWrapToRowIfAllowed الحالية بهذه النسخة
-function addPlayerWrapToRowIfAllowed(row) {
-  if (!row || !(row instanceof HTMLElement)) return;
+    // Prevent adding player-wrap inside notes section and related elements
+    function addPlayerWrapToRowIfAllowed(row) {
+      if (!row || !(row instanceof HTMLElement)) return;
 
-  // جديد: لا نضيف player-wrap داخل قسم الملاحظات أو عناصر الملاحظات أو أداة الإضافة
-  if (row.closest && (row.closest('#notesSection') || row.closest('#notesList') || row.closest('.note-item') || row.closest('.note-controls'))) {
-    return;
-  }
+      // don't add player controls inside notes area
+      if (row.closest && (row.closest('#notesSection') || row.closest('#notesList') || row.closest('.note-item') || row.closest('.note-controls'))) {
+        return;
+      }
 
-  if (row.querySelector('.player-wrap')) return;
-  const lbl = row.querySelector('label');
-  const labelText = lbl ? (lbl.textContent||'').trim() : '';
-  // skip when inputs in row include excluded IDs
-  const inputs = Array.from(row.querySelectorAll('input'));
-  for (const inp of inputs) if (inp.id && EXCLUDED_INPUT_IDS.includes(inp.id)) return;
-  if (EXCLUDED_LABELS.includes(labelText)) return;
-  for (const p of EXCLUDE_PREFIXES) if (labelText.startsWith(p)) return;
-  if (labelText === 'العمليات' || labelText === 'نائب العمليات') return;
+      if (row.querySelector('.player-wrap')) return;
+      const lbl = row.querySelector('label');
+      const labelText = lbl ? (lbl.textContent||'').trim() : '';
+      // skip when inputs in row include excluded IDs
+      const inputs = Array.from(row.querySelectorAll('input'));
+      for (const inp of inputs) if (inp.id && EXCLUDED_INPUT_IDS.includes(inp.id)) return;
+      if (EXCLUDED_LABELS.includes(labelText)) return;
+      for (const p of EXCLUDE_PREFIXES) if (labelText.startsWith(p)) return;
+      if (labelText === 'العمليات' || labelText === 'نائب العمليات') return;
 
-  const playerWrap = document.createElement('div');
-  playerWrap.className = 'player-wrap';
-  const chk = document.createElement('input');
-  chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
-  const span = document.createElement('span'); span.className='playerLabel'; span.textContent=' لاعب معتمد';
-  const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
-  playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
+      const playerWrap = document.createElement('div');
+      playerWrap.className = 'player-wrap';
+      const chk = document.createElement('input');
+      chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
+      const span = document.createElement('span'); span.className='playerLabel'; span.textContent='لاعب';
+      const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
+      playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
 
-  // insert before hide/show/delete button if present
-  const btn = row.querySelector('.hide-btn, .del-btn');
-  if (btn) row.insertBefore(playerWrap, btn);
-  else row.appendChild(playerWrap);
+      // insert before hide/show/delete button if present
+      const btn = row.querySelector('.hide-btn, .del-btn');
+      if (btn) row.insertBefore(playerWrap, btn);
+      else row.appendChild(playerWrap);
 
-  bindPlayerToggle(row);
-}
-
-// تنظيف أي عناصر player-wrap موجودة بالفعل داخل قسم الملاحظات (نفّذ مرة واحدة بعد تحميل الصفحة)
-// يمكنك وضع السطر التالي مباشرة بعد تعريف الدالة أو تشغيله من Console
-document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, .note-controls .player-wrap').forEach(el=>el.remove());
+      bindPlayerToggle(row);
+    }
 
     function bindPlayerToggle(row) {
       const chk = row.querySelector('.playerChk');
@@ -323,7 +312,6 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
           mention.style.display='none';
           mention.value = '';
         }
-        // when player is checked, remove duplicate highlight from code input
         if (!chk.checked && codeInput) checkDuplicates();
         else if (chk.checked && codeInput) codeInput.classList.remove('duplicate');
       });
@@ -338,8 +326,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       input.dataset.listenerAttached='1';
     }
 
-    // create row for dynamic addition
-    // NOTE: do not attach a direct 'click' listener to hide-btn here — we use delegation
+    // create row for dynamic addition (delegation handles hide-button)
     function createRow(labelText,dataRole,targetId){
       const row = document.createElement('div'); row.className='row';
       const label = document.createElement('label'); label.textContent = labelText;
@@ -360,15 +347,12 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       return row;
     }
 
-    // bind add buttons (works for all sections whose data-target matches an existing container id)
+    // bind add buttons
     document.querySelectorAll('.add-btn').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const target = btn.getAttribute('data-target');
         const list = document.getElementById(target);
-        if (!list) {
-          console.warn('add-btn: target not found ->', target);
-          return;
-        }
+        if (!list) return console.warn('add-btn: target not found ->', target);
         const existing = list.querySelectorAll('.row').length;
         const index = existing + 1;
         const firstLabel = list.querySelector('.row label');
@@ -376,14 +360,13 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
         const labelText = base + ' ' + index;
         const newRow = createRow(labelText, labelText, target);
         list.appendChild(newRow);
-        // ensure new buttons are bound (delegation covers hide, so only decorate)
         bindRowHideButtons();
         bindStaticRowDeleteButtons();
         checkDuplicates();
       });
     });
 
-    // hide/show toggle: add/remove hidden-row class and dataset.hidden
+    // toggle hide/show
     function toggleHideRow(row, btn){
       if (!row || !btn) return;
       const wasHidden = row.dataset.hidden==='true';
@@ -399,7 +382,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       checkDuplicates();
     }
 
-    // delegation for hide buttons (works also for dynamically added rows)
+    // delegation for hide buttons so dynamically added rows work
     document.addEventListener('click', function(e){
       const btn = e.target.closest && e.target.closest('.hide-btn');
       if (!btn) return;
@@ -409,7 +392,6 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
     });
 
     function bindRowHideButtons(){
-      // keep to mark buttons as "processed" (no direct listener added here)
       document.querySelectorAll('.hide-btn').forEach(btn=>{
         if (btn.dataset.boundHide==='1') return;
         btn.dataset.boundHide='1';
@@ -417,7 +399,6 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
     }
 
     function bindStaticRowDeleteButtons(){
-      // bind delete for any .del-btn (including newly created ones)
       document.querySelectorAll('.row > .del-btn').forEach(btn=>{
         if (btn.dataset.boundDelete==='1') return;
         btn.addEventListener('click', ()=> {
@@ -429,7 +410,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       });
     }
 
-    // duplicate check (ignore hidden rows and rows whose player-checkbox is checked)
+    // duplicate check
     function checkDuplicates(){
       const inputs = Array.from(document.querySelectorAll('.role'));
       const map = new Map();
@@ -466,7 +447,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       if (dupFound) document.getElementById('dupWarning').style.display='block';
     }
 
-    // ----- Notes handling (supports player mention inside each note) -----
+    // Notes handling
     const addNoteBtn = document.getElementById('addNoteBtn');
     const notesList = document.getElementById('notesList');
 
@@ -480,12 +461,12 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       wrapper.dataset.mention = '';
 
       const txt = document.createElement('span'); txt.className='note-text';
-      txt.textContent = formatNoteText(code,count,type,false);
+      txt.textContent = formatNoteText(code,count,type);
 
-      // player controls for note
+      // player controls for note (local to the note)
       const playerWrap = document.createElement('div'); playerWrap.className='player-wrap';
       const chk = document.createElement('input'); chk.type='checkbox'; chk.className='playerChk';
-      const lbl = document.createElement('span'); lbl.className='playerLabel'; lbl.textContent='لاعب معتمد';
+      const lbl = document.createElement('span'); lbl.className='playerLabel'; lbl.textContent='لاعب';
       const mention = document.createElement('input'); mention.type='text'; mention.className='playerMention'; mention.placeholder='@player';
       mention.style.display='none';
 
@@ -514,8 +495,8 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       return wrapper;
     }
 
-    function formatNoteText(code, count, type, edited){
-      // تعرض النص بدون الوسم "(edited)" — نتجاهل معامل edited هنا عمداً
+    function formatNoteText(code, count, type){
+      // return text without "(edited)"
       if (!code && !count && !type) return '';
       const parts = [];
       if (code) parts.push(code + ':');
@@ -524,19 +505,16 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       return parts.join(' ');
     }
 
-    // ---- FIXED enterEditMode: preserves span reference and syncs player state on save ----
+    // enterEditMode - preserves original span reference and syncs player state on save
     function enterEditMode(wrapper){
-      // حفظ القيم الحالية
       const currentCode = wrapper.dataset.code||'';
       const currentCount = wrapper.dataset.count||'';
       const currentType = wrapper.dataset.type||'';
       const currentMention = wrapper.dataset.mention||'';
 
-      // المرجع للنص الأصلي (سيُعاد بعد الحفظ أو الإلغاء)
       const txt = wrapper.querySelector('.note-text');
       if (!txt) return;
 
-      // إنشاء المحرر
       const editor = document.createElement('div');
       editor.style.display='flex';
       editor.style.gap='8px';
@@ -565,20 +543,17 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       const cancel = document.createElement('button'); cancel.type='button'; cancel.className='del-btn'; cancel.textContent='إلغاء';
 
       save.addEventListener('click', ()=> {
-        // حدّث بيانات العنصر
         wrapper.dataset.code = codeIn.value.trim();
         wrapper.dataset.count = countIn.value.trim();
         wrapper.dataset.type = typeSel.value;
         wrapper.dataset.mention = chk.checked && mentionIn.value.trim() ? mentionIn.value.trim() : '';
         wrapper.dataset.edited = 'true';
 
-        // حدّث النص المعروض باستخدام المرجع المحفوظ (بدون إضافة "(edited)")
         txt.textContent = formatNoteText(wrapper.dataset.code, wrapper.dataset.count, wrapper.dataset.type);
 
-        // أعد الـ span إلى DOM مكان المحرر
         editor.replaceWith(txt);
 
-        // مزامنة حالة player-wrap (checkbox + mention input) في الواجهة
+        // sync UI player state (the per-note player controls)
         const notePlayerChk = wrapper.querySelector('.playerChk');
         const noteMention = wrapper.querySelector('.playerMention');
         if (notePlayerChk && noteMention) {
@@ -593,21 +568,17 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
           }
         }
 
-        // بعد الحفظ: تأكد من فحص التكرارات
         checkDuplicates();
       });
 
       cancel.addEventListener('click', ()=> {
-        // استبدال المحرر بالـ span الأصلي دون تغيير البيانات
         editor.replaceWith(txt);
       });
 
-      // اجمع عناصر المحرر ثم استبدل الـ span بالمحرر
       editor.appendChild(codeIn); editor.appendChild(countIn); editor.appendChild(typeSel);
       editor.appendChild(chk); editor.appendChild(mentionIn);
       editor.appendChild(save); editor.appendChild(cancel);
 
-      // استبدل النص بالمحرر (نستخدم المرجع txt المحفوظ)
       txt.replaceWith(editor);
     }
 
@@ -621,7 +592,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       document.getElementById('noteCode').value=''; document.getElementById('noteCount').value='';
     });
 
-    // append functions (unchanged logic)
+    // append helpers
     function appendFromContainer(containerId,out,addBlankAfter=true){
       const container = document.getElementById(containerId); if (!container) return;
       const rows = container.querySelectorAll('.row');
@@ -675,11 +646,11 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       });
     }
 
-    // build report (notes now support note-player mentions)
+    // build report
     function buildReportText(){
       checkDuplicates();
       const out=[]; const shiftLabel='الميناء'; const timeLabel='6 صباحا';
-      out.push('تقرير العـــمـــلــIITIES في ' + shiftLabel); out.push(''); out.push('تم استلام عمليات ' + shiftLabel + ' في تمام الساعه ' + timeLabel); out.push('');
+      out.push('تقرير العـــمـــلــيــات في ' + shiftLabel); out.push(''); out.push('تم استلام عمليات ' + shiftLabel + ' في تمام الساعه ' + timeLabel); out.push('');
       const rawOps = (document.getElementById('operations').value||'').trim();
       const rawOpsDeputy = (document.getElementById('opsDeputy').value||'').trim();
       const operations = rawOps ? (rawOps.startsWith('@')?rawOps:('@'+rawOps)) : '@';
@@ -713,7 +684,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
 
       appendCoastalWithGaps(out);
 
-      // notes: use mention if player checked for that note, otherwise use code/count/type
+      // notes
       const noteItems = Array.from(document.querySelectorAll('#notesList .note-item'));
       if (noteItems.length>0) {
         const mainNote = (document.getElementById('noteField').value||'').trim();
@@ -727,13 +698,12 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
           if (playerChk && playerChk.checked) {
             const raw = (mention && mention.value)? mention.value.trim() : '';
             const m = raw ? (raw.startsWith('@') ? raw : ('@'+raw)) : '@';
-            // include type/count if present after mention
             line = m + (type ? (' ' + type) : '') + (count ? (' ' + count) : '');
           } else {
             let parts=[]; if (code) parts.push(code+':'); if (count) parts.push(count); if (type) parts.push(type);
             line = parts.join(' ');
           }
-          if (line) { if (edited) line += ''; out.push(line); }
+          if (line) { out.push(line); }
         });
       }
 
@@ -764,13 +734,12 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
     document.querySelectorAll('.row').forEach(r=>{
       const roleInp = r.querySelector('.role'); if (roleInp) attachRoleListener(roleInp);
     });
-    // add player-wraps to eligible rows
     document.querySelectorAll('.row').forEach(r => addPlayerWrapToRowIfAllowed(r));
     bindRowHideButtons();
     bindStaticRowDeleteButtons();
     checkDuplicates();
 
-    // observe dynamic changes (new rows / notes)
+    // observe dynamic changes
     const observer = new MutationObserver(muts=>{
       muts.forEach(m=>{
         m.addedNodes.forEach(node=>{
@@ -780,7 +749,6 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
             addPlayerWrapToRowIfAllowed(r);
             bindPlayerToggle(r);
           });
-          // for notesList new note-items, ensure player controls work
           if (node.matches && node.matches('.note-item')) {
             const chk = node.querySelector('.playerChk');
             const mention = node.querySelector('.playerMention');
