@@ -651,7 +651,7 @@
         if (r.dataset.hidden==='true') return;
         const roleName = (r.querySelector('label')||{}).textContent || '';
         const codeInput = r.querySelector('.role'); const playerChk = r.querySelector('.playerChk'); const mention = r.querySelector('.playerMention');
-        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000';
+        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) { val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000'; }
         out.push(roleName + ' : ' + val); pushedAny = true;
       });
       if (ayn.length) out.push('');
@@ -659,7 +659,7 @@
         if (r.dataset.hidden==='true') return;
         const roleName = (r.querySelector('label')||{}).textContent || '';
         const codeInput = r.querySelector('.role'); const playerChk = r.querySelector('.playerChk'); const mention = r.querySelector('.playerMention');
-        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000';
+        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) { val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000'; }
         out.push(roleName + ' : ' + val); pushedAny = true;
       });
       if (sah.length) out.push('');
@@ -667,7 +667,7 @@
         if (r.dataset.hidden==='true') return;
         const roleName = (r.querySelector('label')||{}).textContent || '';
         const codeInput = r.querySelector('.role'); const playerChk = r.querySelector('.playerChk'); const mention = r.querySelector('.playerMention');
-        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000';
+        let val='H-000'; if (playerChk && playerChk.checked) { const raw=(mention && mention.value)?mention.value.trim():''; if (raw) val = raw.startsWith('@')?raw:('@'+raw); else val='@'; } else if (codeInput) { val = (codeInput.value && codeInput.value.trim())?codeInput.value.trim():'H-000'; }
         out.push(roleName + ' : ' + val); pushedAny = true;
       });
       // do NOT push a trailing blank here; caller will manage section separation
@@ -691,6 +691,33 @@
       const opsDeputy = rawOpsDeputy ? (rawOpsDeputy.startsWith('@')?rawOpsDeputy:('@'+rawOpsDeputy)) : '@';
       out.push('العمليات : ' + operations);
       out.push('نائب العمليات : ' + opsDeputy);
+      out.push('');
+
+      // include القيادة العامة (قائد و نائب) - previously missing from report
+      const leader = document.querySelector('input[data-role="قائد امن المنشأت"]');
+      if (leader) {
+        const row = leader.closest('.row');
+        const playerChk = row ? row.querySelector('.playerChk') : null;
+        const mention = row ? row.querySelector('.playerMention') : null;
+        let val = (leader.value && leader.value.trim()) ? leader.value.trim() : 'H-000';
+        if (playerChk && playerChk.checked) {
+          const raw = (mention && mention.value) ? mention.value.trim() : '';
+          val = raw ? (raw.startsWith('@') ? raw : ('@' + raw)) : '@';
+        }
+        out.push(leader.getAttribute('data-role') + ' : ' + val);
+      }
+      const leaderDeputy = document.querySelector('input[data-role="نائب قائد امن المنشأت"]');
+      if (leaderDeputy) {
+        const row = leaderDeputy.closest('.row');
+        const playerChk = row ? row.querySelector('.playerChk') : null;
+        const mention = row ? row.querySelector('.playerMention') : null;
+        let val = (leaderDeputy.value && leaderDeputy.value.trim()) ? leaderDeputy.value.trim() : 'H-000';
+        if (playerChk && playerChk.checked) {
+          const raw = (mention && mention.value) ? mention.value.trim() : '';
+          val = raw ? (raw.startsWith('@') ? raw : ('@' + raw)) : '@';
+        }
+        out.push(leaderDeputy.getAttribute('data-role') + ' : ' + val);
+      }
       out.push('');
 
       // leaders block
