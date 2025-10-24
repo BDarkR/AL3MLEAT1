@@ -736,13 +736,18 @@
       out.push('');
 
       // append several small lists and keep single blank after them
-      appendFromContainer('radaList', out, false);
-      appendFromContainer('barqList', out, false);
+      // add spacing between rada / barq / sahm
+      appendFromContainer('radaList', out, true);
+      appendFromContainer('barqList', out, true);
       appendFromContainer('sahmList', out, false);
       out.push('');
 
-      appendFromContainer('securitySupervisors', out, false);
+      // ensure spacer inside securitySupervisors creates a blank, 
+      appendFromContainer('securitySupervisors', out, true);
+      // removed extra out.push('') here to avoid double blank between "أمن 2" و "حرة"
       appendFromContainer('huraList', out, false);
+      // added a blank between "حرة" و "صقر"
+      out.push('');
       appendFromContainer('saqrList', out, false);
       out.push('');
 
