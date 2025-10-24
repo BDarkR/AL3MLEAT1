@@ -203,7 +203,6 @@
       <div class="section" id="criminalSection">
         <h3 style="margin:0 0 8px;color:var(--accent);font-size:16px">البحث الجنائي</h3>
         <div id="criminalList">
-          
           <div class="row"><label>قائد فرقة البحث الجنائي</label><input class="input role" data-role="قائد فرقة البحث الجنائي" value="H-000"/></div>
           <div class="row"><label>نائب الفرقة</label><input class="input role" data-role="نائب الفرقة" value="H-000"/></div>
           <div class="row"><label>جنائي 1</label><input class="input role" data-role="جنائي 1" value="H-000"/></div>
@@ -680,7 +679,9 @@
       if (police) { const row = police.closest('.row'); const playerChk = row?row.querySelector('.playerChk'):null; const mention = row?row.querySelector('.playerMention'):null; let val = (police.value && police.value.trim())?police.value.trim():'H-000'; if (playerChk && playerChk.checked) { const raw = (mention && mention.value)?mention.value.trim():''; val = raw? (raw.startsWith('@')?raw:('@'+raw)) : '@'; } out.push(police.getAttribute('data-role') + ' : ' + val); out.push(''); }
 
       out.push('البحث الجنائي'); appendFromContainer('criminalList', out);
+      
       out.push(''); out.push('القوات الخاصة'); appendFromContainer('specialForcesList', out);
+      
       out.push(''); out.push('الأمن والحماية'); appendFromContainer('securityList', out);
 
       appendCoastalWithGaps(out);
