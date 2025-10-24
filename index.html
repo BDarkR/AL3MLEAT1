@@ -514,27 +514,47 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       return wrapper;
     }
 
-    function formatNoteText(code,count,type,edited){
+    function formatNoteText(code, count, type, edited){
+      // تعرض النص بدون الوسم "(edited)" — نتجاهل معامل edited هنا عمداً
       if (!code && !count && !type) return '';
-      let parts=[]; if (code) parts.push(code+':'); if (count) parts.push(count); if (type) parts.push(type);
-      let res = parts.join(' '); if (edited) res += ' (edited)'; return res;
+      const parts = [];
+      if (code) parts.push(code + ':');
+      if (count) parts.push(count);
+      if (type) parts.push(type);
+      return parts.join(' ');
     }
 
+    // ---- FIXED enterEditMode: preserves span reference and syncs player state on save ----
     function enterEditMode(wrapper){
+      // حفظ القيم الحالية
       const currentCode = wrapper.dataset.code||'';
       const currentCount = wrapper.dataset.count||'';
       const currentType = wrapper.dataset.type||'';
       const currentMention = wrapper.dataset.mention||'';
 
-      const editor = document.createElement('div'); editor.style.display='flex'; editor.style.gap='8px'; editor.style.alignItems='center';
+      // المرجع للنص الأصلي (سيُعاد بعد الحفظ أو الإلغاء)
+      const txt = wrapper.querySelector('.note-text');
+      if (!txt) return;
+
+      // إنشاء المحرر
+      const editor = document.createElement('div');
+      editor.style.display='flex';
+      editor.style.gap='8px';
+      editor.style.alignItems='center';
+
       const codeIn = document.createElement('input'); codeIn.className='input small'; codeIn.value=currentCode; codeIn.placeholder='H-914';
       const countIn = document.createElement('input'); countIn.className='input small'; countIn.value=currentCount; countIn.placeholder='كم';
       const typeSel = document.createElement('select'); typeSel.className='small';
-      ['','حرة','سهم','صقر','برق','ردع'].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v||'نوع'; if (v===currentType) o.selected=true; typeSel.appendChild(o);});
+      ['','حرة','سهم','صقر','برق','ردع'].forEach(v=>{
+        const o=document.createElement('option'); o.value=v; o.textContent=v||'نوع';
+        if (v===currentType) o.selected=true;
+        typeSel.appendChild(o);
+      });
 
       const chk = document.createElement('input'); chk.type='checkbox'; chk.className='playerChk';
-      const mentionIn = document.createElement('input'); mentionIn.className='playerMention'; mentionIn.placeholder='@player'; mentionIn.value = currentMention || '';
-      if (currentMention) mentionIn.style.display='inline-block', chk.checked = true; else mentionIn.style.display='none';
+      const mentionIn = document.createElement('input'); mentionIn.className='playerMention'; mentionIn.placeholder='@player';
+      mentionIn.value = currentMention || '';
+      if (currentMention) { mentionIn.style.display='inline-block'; chk.checked = true; } else { mentionIn.style.display='none'; }
 
       chk.addEventListener('change', ()=> {
         if (chk.checked) mentionIn.style.display='inline-block';
@@ -542,29 +562,52 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
       });
 
       const save = document.createElement('button'); save.type='button'; save.className='add-btn'; save.textContent='حفظ';
+      const cancel = document.createElement('button'); cancel.type='button'; cancel.className='del-btn'; cancel.textContent='إلغاء';
+
       save.addEventListener('click', ()=> {
+        // حدّث بيانات العنصر
         wrapper.dataset.code = codeIn.value.trim();
         wrapper.dataset.count = countIn.value.trim();
         wrapper.dataset.type = typeSel.value;
         wrapper.dataset.mention = chk.checked && mentionIn.value.trim() ? mentionIn.value.trim() : '';
         wrapper.dataset.edited = 'true';
-        // update displayed text
-        const txt = wrapper.querySelector('.note-text');
-        txt.textContent = formatNoteText(wrapper.dataset.code, wrapper.dataset.count, wrapper.dataset.type, true);
+
+        // حدّث النص المعروض باستخدام المرجع المحفوظ (بدون إضافة "(edited)")
+        txt.textContent = formatNoteText(wrapper.dataset.code, wrapper.dataset.count, wrapper.dataset.type);
+
+        // أعد الـ span إلى DOM مكان المحرر
         editor.replaceWith(txt);
+
+        // مزامنة حالة player-wrap (checkbox + mention input) في الواجهة
+        const notePlayerChk = wrapper.querySelector('.playerChk');
+        const noteMention = wrapper.querySelector('.playerMention');
+        if (notePlayerChk && noteMention) {
+          if (wrapper.dataset.mention && wrapper.dataset.mention.length) {
+            notePlayerChk.checked = true;
+            noteMention.value = wrapper.dataset.mention;
+            noteMention.style.display = 'inline-block';
+          } else {
+            notePlayerChk.checked = false;
+            noteMention.value = '';
+            noteMention.style.display = 'none';
+          }
+        }
+
+        // بعد الحفظ: تأكد من فحص التكرارات
+        checkDuplicates();
       });
 
-      const cancel = document.createElement('button'); cancel.type='button'; cancel.className='del-btn'; cancel.textContent='إلغاء';
       cancel.addEventListener('click', ()=> {
-        const txt = wrapper.querySelector('.note-text');
+        // استبدال المحرر بالـ span الأصلي دون تغيير البيانات
         editor.replaceWith(txt);
       });
 
+      // اجمع عناصر المحرر ثم استبدل الـ span بالمحرر
       editor.appendChild(codeIn); editor.appendChild(countIn); editor.appendChild(typeSel);
       editor.appendChild(chk); editor.appendChild(mentionIn);
       editor.appendChild(save); editor.appendChild(cancel);
 
-      const txt = wrapper.querySelector('.note-text');
+      // استبدل النص بالمحرر (نستخدم المرجع txt المحفوظ)
       txt.replaceWith(editor);
     }
 
@@ -636,7 +679,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
     function buildReportText(){
       checkDuplicates();
       const out=[]; const shiftLabel='الميناء'; const timeLabel='6 صباحا';
-      out.push('تقرير العـــمـــلــيــات في ' + shiftLabel); out.push(''); out.push('تم استلام عمليات ' + shiftLabel + ' في تمام الساعه ' + timeLabel); out.push('');
+      out.push('تقرير العـــمـــلــIITIES في ' + shiftLabel); out.push(''); out.push('تم استلام عمليات ' + shiftLabel + ' في تمام الساعه ' + timeLabel); out.push('');
       const rawOps = (document.getElementById('operations').value||'').trim();
       const rawOpsDeputy = (document.getElementById('opsDeputy').value||'').trim();
       const operations = rawOps ? (rawOps.startsWith('@')?rawOps:('@'+rawOps)) : '@';
@@ -690,7 +733,7 @@ document.querySelectorAll('#notesSection .player-wrap, #notesList .player-wrap, 
             let parts=[]; if (code) parts.push(code+':'); if (count) parts.push(count); if (type) parts.push(type);
             line = parts.join(' ');
           }
-          if (line) { if (edited) line += ' (edited)'; out.push(line); }
+          if (line) { if (edited) line += ''; out.push(line); }
         });
       }
 
