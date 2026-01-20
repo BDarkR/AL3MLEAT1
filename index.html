@@ -37,11 +37,28 @@
       margin-bottom: 20px;
     }
 
-    .section-title {
-      font-size: 18px;
+    .form-group {
+      padding: 10px 0;
+    }
+
+    .form-group label {
+      display: inline-block;
+      width: 200px;
+      font-size: 14px;
       font-weight: bold;
       color: var(--primary-color);
-      margin-bottom: 10px;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      display: inline-block;
+      width: calc(100% - 220px);
+      padding: 6px;
+      background: #222;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      color: #eee;
+      font-family: 'Cairo', sans-serif;
     }
 
     .custom-actions {
@@ -128,20 +145,22 @@
 
     <!-- الحقول الخاصة بالعمليات -->
     <div class="form-group">
-      <label>وقت التقرير:</label>
-      <input type="text" id="reportTimeInput" value="01:00 ص الى 01:00 ص" />
-    </div>
-    <div class="form-group">
-      <label>مركز العمليات الميناء:</label>
-      <input type="text" id="portOperationsInput" value="@منشن عمليات الميناء" />
-    </div>
-    <div class="form-group">
-      <label>مركز العمليات لوس:</label>
-      <input type="text" id="losOperationsInput" value="@منشن عمليات لوس" />
-    </div>
-    <div class="form-group">
-      <label>نائب مركز العمليات:</label>
-      <input type="text" id="deputyOperationsInput" value="@منشن نائب العمليات" />
+      <div class="item-row">
+        <label for="reportTimeInput">وقت التقرير:</label>
+        <input type="text" id="reportTimeInput" class="item-input" value="01:00 ص الى 01:00 ص" />
+      </div>
+      <div class="item-row">
+        <label for="portOperationsInput">مركز العمليات الميناء:</label>
+        <input type="text" id="portOperationsInput" class="item-input" value="@منشن عمليات الميناء" />
+      </div>
+      <div class="item-row">
+        <label for="losOperationsInput">مركز العمليات لوس:</label>
+        <input type="text" id="losOperationsInput" class="item-input" value="@منشن عمليات لوس" />
+      </div>
+      <div class="item-row">
+        <label for="deputyOperationsInput">نائب مركز العمليات:</label>
+        <input type="text" id="deputyOperationsInput" class="item-input" value="@منشن نائب العمليات" />
+      </div>
     </div>
 
     <hr />
@@ -260,7 +279,7 @@
 نائب مركز العمليات: ${document.getElementById("deputyOperationsInput").value}
 
 —————————————————
-��لقائمة الرئيسية:
+القائمة الرئيسية:
 —————————————————
 `;
 
