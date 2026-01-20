@@ -2,56 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>تقرير نائب عمليات الميناء</title>
+<title>تقرير العمليات الكامل - الميناء</title>
 <style>
-body{
-  background:#0f172a;
-  color:#e5e7eb;
-  font-family:Tahoma,Arial;
-  padding:20px;
-}
-h2{margin-top:30px}
-.row{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:6px;
-}
+body{background:#0f172a;color:#e5e7eb;font-family:Tahoma,Arial;padding:20px}
+h1,h2{margin-top:20px}
+.row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 label{width:160px}
-input{
-  flex:1;
-  padding:6px;
-  background:#020617;
-  border:1px solid #334155;
-  color:#e5e7eb;
-  border-radius:4px;
-}
-button{
-  padding:6px 12px;
-  background:#2563eb;
-  border:none;
-  color:white;
-  border-radius:6px;
-  cursor:pointer;
-}
-.add-btn{
-  background:#16a34a;
-  margin-bottom:10px;
-}
-textarea{
-  width:100%;
-  height:420px;
-  margin-top:15px;
-  background:#020617;
-  color:#e5e7eb;
-  border:1px solid #334155;
-  padding:10px;
-  border-radius:6px;
-  white-space:pre;
-}
+input{flex:1;padding:6px;background:#020617;border:1px solid #334155;color:#e5e7eb;border-radius:4px}
+button{padding:6px 12px;background:#2563eb;border:none;color:white;border-radius:6px;cursor:pointer}
+.add-btn{background:#16a34a;margin-bottom:10px}
+textarea{width:100%;height:420px;margin-top:15px;background:#020617;color:#e5e7eb;border:1px solid #334155;padding:10px;border-radius:6px;white-space:pre;}
 </style>
 </head>
-
 <body>
 
 <h1>تقرير نائب عمليات الميناء</h1>
@@ -67,7 +29,14 @@ textarea{
 
 <h2>القائمة الرئيسية</h2>
 <div id="mainUnits"></div>
+<button class="add-btn" onclick="addUnit('mainUnits','م قيادة')">＋ إضافة قيادة</button>
+<button class="add-btn" onclick="addUnit('mainUnits','درع')">＋ إضافة درع</button>
+<button class="add-btn" onclick="addUnit('mainUnits','برق')">＋ إضافة برق</button>
+<button class="add-btn" onclick="addUnit('mainUnits','صقر')">＋ إضافة صقر</button>
 <button class="add-btn" onclick="addUnit('mainUnits','سهم')">＋ إضافة سهم</button>
+<button class="add-btn" onclick="addUnit('mainUnits','مشرف أمن')">＋ إضافة مشرف أمن</button>
+<button class="add-btn" onclick="addUnit('mainUnits','أمن')">＋ إضافة أمن</button>
+<button class="add-btn" onclick="addUnit('mainUnits','الشرطة العسكرية')">＋ إضافة شرطة عسكرية</button>
 
 <h2>وحدات مدينة لوس</h2>
 <div id="losUnits"></div>
@@ -76,6 +45,29 @@ textarea{
 <h2>وحدات الميناء</h2>
 <div id="portUnits"></div>
 <button class="add-btn" onclick="addUnit('portUnits','حرة')">＋ إضافة حرة</button>
+
+<h2>البحث الجنائي</h2>
+<div id="criminalUnits"></div>
+<button class="add-btn" onclick="addUnit('criminalUnits','قائد فرقة البحث الجنائي')">＋ إضافة قائد</button>
+<button class="add-btn" onclick="addUnit('criminalUnits','نائب الفرقة')">＋ إضافة نائب</button>
+<button class="add-btn" onclick="addUnit('criminalUnits','جنائي')">＋ إضافة جنائي</button>
+
+<h2>القوات الخاصة (SWAT)</h2>
+<div id="swatUnits"></div>
+<button class="add-btn" onclick="addUnit('swatUnits','قائد فرقة القوات الخاصة')">＋ إضافة قائد</button>
+<button class="add-btn" onclick="addUnit('swatUnits','نائب الفرقة')">＋ إضافة نائب</button>
+<button class="add-btn" onclick="addUnit('swatUnits','حزم')">＋ إضافة حزم</button>
+<button class="add-btn" onclick="addUnit('swatUnits','رمح')">＋ إضافة رمح</button>
+
+<h2>الأمن والحماية</h2>
+<div id="securityUnits"></div>
+<button class="add-btn" onclick="addUnit('securityUnits','حماية')">＋ إضافة حماية</button>
+
+<h2>وحدات ساحل/عين/سجن</h2>
+<div id="coastalUnits"></div>
+<button class="add-btn" onclick="addUnit('coastalUnits','عين')">＋ إضافة عين</button>
+<button class="add-btn" onclick="addUnit('coastalUnits','ساحل')">＋ إضافة ساحل</button>
+<button class="add-btn" onclick="addUnit('coastalUnits','سجن')">＋ إضافة سجن</button>
 
 <button onclick="buildReport()">إنشاء التقرير</button>
 <button onclick="copyReport()">نسخ التقرير</button>
@@ -88,16 +80,12 @@ const SEP = '—————————————————';
 function addUnit(containerId, name){
   const box = document.getElementById(containerId);
   const count = box.children.length + 1;
-
   const row = document.createElement('div');
   row.className = 'row';
-
   const label = document.createElement('label');
   label.textContent = `${name} ${count}`;
-
   const input = document.createElement('input');
   input.value = 'H-000';
-
   row.appendChild(label);
   row.appendChild(input);
   box.appendChild(row);
@@ -112,11 +100,11 @@ function buildList(container, title, out){
     const code = r.children[1].value || 'H-000';
     out.push(`${name} | ${code}`);
   });
+  out.push('');
 }
 
 function buildReport(){
   const out = [];
-
   out.push(`تم استلام مهام نائب العمليات الميناء في تمام الساعة ${from.value} الى ${to.value}`);
   out.push('');
   out.push(`مركز العمليات الميناء : ${opsPort.value}`);
@@ -127,16 +115,12 @@ function buildReport(){
   out.push('');
 
   buildList(mainUnits,'القائمة الرئيسية :',out);
-  out.push('');
-  out.push(SEP);
-  out.push('');
-
   buildList(losUnits,'وحدات مدينة لوس :',out);
-  out.push('');
-  out.push(SEP);
-  out.push('');
-
   buildList(portUnits,'وحدات الميناء :',out);
+  buildList(criminalUnits,'البحث الجنائي :',out);
+  buildList(swatUnits,'القوات الخاصة :',out);
+  buildList(securityUnits,'الأمن والحماية :',out);
+  buildList(coastalUnits,'وحدات ساحل/عين/سجن :',out);
 
   output.value = out.join('\n');
 }
