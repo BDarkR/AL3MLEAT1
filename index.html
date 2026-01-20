@@ -130,12 +130,6 @@
         </div>
       </div>
 
-      <div class="section">
-        <h3>القيادة العامة</h3>
-        <div class="row"><label>قائد امن المنشأت</label><input class="input role" data-role="قائد امن المنشأت" value="H-000" /></div>
-        <div class="row"><label>نائب قائد امن المنشأت</label><input class="input role" data-role="نائب قائد امن المنشأت" value="H-000" /></div>
-      </div>
-
       <div class="section" id="leadershipSection">
         <h3>القيادة (قابل للإضافة)</h3>
         <div id="leadershipList">
@@ -689,7 +683,6 @@
       out.push('نائب العمليات : ' + opsDeputy);
       out.push('');
 
-      // include القيادة العامة (قائد و نائب) - previously missing from report
       const leader = document.querySelector('input[data-role="قائد امن المنشأت"]');
       if (leader) {
         const row = leader.closest('.row');
