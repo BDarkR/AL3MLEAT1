@@ -1,186 +1,161 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>تقرير العمليات - الميناء</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body{
-      margin:0;
-      font-family:'Cairo', Arial, sans-serif;
-      background:#0b0b0b;
-      color:#eee;
-      padding:18px;
-    }
-    .card{
-      max-width:1100px;
-      margin:auto;
-      background:#1c1c1c;
-      border-radius:12px;
-      padding:18px;
-    }
-    .title{
-      text-align:center;
-      color:#27ae60;
-      margin-bottom:10px;
-    }
-    .row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
-    label{min-width:180px}
-    input{
-      flex:1;
-      padding:8px;
-      border-radius:6px;
-      border:1px solid #333;
-      background:#222;
-      color:#eee;
-    }
-    textarea{
-      width:100%;
-      min-height:260px;
-      background:#222;
-      color:#eee;
-      border-radius:8px;
-      padding:12px;
-      border:1px solid #333;
-      white-space:pre-wrap;
-    }
-    button{
-      padding:10px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-      background:#27ae60;
-      color:#fff;
-      font-weight:bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>تقرير نائب عمليات الميناء</title>
+<style>
+  body {
+    background:#0f172a;
+    color:#e5e7eb;
+    font-family: Tahoma, Arial;
+    padding:20px;
+  }
+  h2 { margin-top:30px; }
+  .row {
+    display:flex;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  label {
+    width:180px;
+    font-size:14px;
+  }
+  input {
+    flex:1;
+    padding:6px;
+    background:#020617;
+    border:1px solid #334155;
+    color:#e5e7eb;
+    border-radius:4px;
+  }
+  button {
+    margin-top:15px;
+    padding:10px 18px;
+    background:#2563eb;
+    border:none;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  textarea {
+    width:100%;
+    height:420px;
+    margin-top:15px;
+    background:#020617;
+    color:#e5e7eb;
+    border:1px solid #334155;
+    padding:10px;
+    border-radius:6px;
+    white-space:pre;
+  }
+</style>
 </head>
 
 <body>
 
-<section class="card">
-  <h1 class="title">إنشاء تقرير نائب العمليات</h1>
+<h1>تقرير نائب عمليات الميناء</h1>
 
-  <div class="row">
-    <label>وقت البداية</label>
-    <input id="timeFrom" value="01:00 ص">
-  </div>
+<h2>الاستلام</h2>
+<div class="row"><label>وقت الاستلام</label><input id="from" value="01:00 ص"></div>
+<div class="row"><label>وقت التسليم</label><input id="to" value="01:00 ص"></div>
 
-  <div class="row">
-    <label>وقت النهاية</label>
-    <input id="timeTo" value="01:00 ص">
-  </div>
+<h2>العمليات (منشن فقط)</h2>
+<div class="row"><label>مركز عمليات الميناء</label><input id="opsPort" placeholder="@"></div>
+<div class="row"><label>مركز عمليات لوس</label><input id="opsLos" placeholder="@"></div>
+<div class="row"><label>نائب مركز العمليات</label><input id="opsDeputy" placeholder="@"></div>
 
-  <div class="row">
-    <label>مركز عمليات الميناء</label>
-    <input id="opsPort" placeholder="@">
-  </div>
+<h2>القائمة الرئيسية</h2>
+<div class="row"><label>م قيادة</label><input id="u_command" value="H-000"></div>
+<div class="row"><label>درع 1</label><input id="u_dira1" value="H-000"></div>
+<div class="row"><label>برق 1</label><input id="u_barq1" value="H-000"></div>
+<div class="row"><label>صقر 1</label><input id="u_saqr1" value="H-000"></div>
+<div class="row"><label>سهم 1</label><input id="u_sahm1" value="H-000"></div>
+<div class="row"><label>سهم 2</label><input id="u_sahm2" value="H-000"></div>
+<div class="row"><label>مشرف أمن 1</label><input id="u_secSup1" value="H-000"></div>
+<div class="row"><label>أمن 1</label><input id="u_sec1" value="H-000"></div>
+<div class="row"><label>أمن 2</label><input id="u_sec2" value="H-000"></div>
+<div class="row"><label>أسماك 1</label><input id="u_fish1" value="H-000"></div>
+<div class="row"><label>الشرطة العسكرية</label><input id="u_mp" value="H-000"></div>
 
-  <div class="row">
-    <label>مركز عمليات لوس</label>
-    <input id="opsLos" placeholder="@">
-  </div>
+<h2>وحدات مدينة لوس</h2>
+<div class="row"><label>ساهر 1</label><input id="los1" value="H-000"></div>
+<div class="row"><label>ساهر 2</label><input id="los2" value="H-000"></div>
+<div class="row"><label>ساهر 3</label><input id="los3" value="H-000"></div>
+<div class="row"><label>ساهر 4</label><input id="los4" value="H-000"></div>
+<div class="row"><label>ساهر 5</label><input id="los5" value="H-000"></div>
 
-  <div class="row">
-    <label>نائب مركز العمليات</label>
-    <input id="opsDeputy" placeholder="@">
-  </div>
+<h2>وحدات الميناء</h2>
+<div class="row"><label>حرة 1</label><input id="port1" value="H-000"></div>
+<div class="row"><label>حرة 2</label><input id="port2" value="H-000"></div>
+<div class="row"><label>حرة 3</label><input id="port3" value="H-000"></div>
+<div class="row"><label>حرة 4</label><input id="port4" value="H-000"></div>
+<div class="row"><label>حرة 5</label><input id="port5" value="H-000"></div>
 
-  <button onclick="buildReport()">إنشاء التقرير</button>
+<button onclick="buildReport()">إنشاء التقرير</button>
+<button onclick="copyReport()">نسخ التقرير</button>
 
-  <br><br>
-
-  <textarea id="output" placeholder="سيظهر التقرير هنا"></textarea>
-</section>
+<textarea id="output"></textarea>
 
 <script>
-const SEPARATOR = '—————————————————';
+const SEP = '—————————————————';
 
-function v(id){
-  const val = document.getElementById(id).value.trim();
-  if(!val) return 'H-000';
-  return val.startsWith('@') ? val : '@' + val;
+function code(id){
+  const v = document.getElementById(id).value.trim();
+  return v ? v : 'H-000';
 }
 
 function buildReport(){
   const out = [];
 
-  out.push(
-    `تم استلام مهام نائب العمليات الميناء في تمام الساعة ${timeFrom.value} الى ${timeTo.value}`
-  );
+  out.push(`تم استلام مهام نائب العمليات الميناء في تمام الساعة ${from.value} الى ${to.value}`);
   out.push('');
-
-  out.push(`مركز العمليات الميناء : ${v('opsPort')}`);
-  out.push(`مركز العمليات لوس : ${v('opsLos')}`);
-  out.push(`نائب مركز العمليات : ${v('opsDeputy')}`);
+  out.push(`مركز العمليات الميناء : ${opsPort.value}`);
+  out.push(`مركز العمليات لوس : ${opsLos.value}`);
+  out.push(`نائب مركز العمليات : ${opsDeputy.value}`);
   out.push('');
-  out.push(SEPARATOR);
+  out.push(SEP);
   out.push('');
-
   out.push('القائمة الرئيسية :');
   out.push('');
-  out.push('م قيادة | H-000');
-  out.push('درع 1 | H-000');
-  out.push('برق 1 | H-000');
-  out.push('صقر 1 | H-000');
-  out.push('سهم 1 | H-000');
-  out.push('سهم 2 | H-000');
-  out.push('مشرف أمن 1 | H-000');
-  out.push('امن 1 | H-000');
-  out.push('امن 2 | H-000');
-  out.push('اسماك 1 | H-000');
-  out.push('الشرطة العسكرية | H-000');
-
+  out.push(`م قيادة | ${code('u_command')}`);
+  out.push(`درع 1 | ${code('u_dira1')}`);
+  out.push(`برق 1 | ${code('u_barq1')}`);
+  out.push(`صقر 1 | ${code('u_saqr1')}`);
+  out.push(`سهم 1 | ${code('u_sahm1')}`);
+  out.push(`سهم 2 | ${code('u_sahm2')}`);
+  out.push(`مشرف أمن 1 | ${code('u_secSup1')}`);
+  out.push(`امن 1 | ${code('u_sec1')}`);
+  out.push(`امن 2 | ${code('u_sec2')}`);
+  out.push(`اسماك 1 | ${code('u_fish1')}`);
+  out.push(`الشرطة العسكرية | ${code('u_mp')}`);
   out.push('');
-  out.push(SEPARATOR);
+  out.push(SEP);
   out.push('');
-
   out.push('وحدات مدينة لوس :');
   out.push('');
-  out.push('ساهر 1 | H-000');
-  out.push('ساهر 2 | H-000');
-  out.push('ساهر 3 | H-000');
-  out.push('ساهر 4 | H-000');
-  out.push('ساهر 5 | H-000');
-
+  out.push(`ساهر 1 | ${code('los1')}`);
+  out.push(`ساهر 2 | ${code('los2')}`);
+  out.push(`ساهر 3 | ${code('los3')}`);
+  out.push(`ساهر 4 | ${code('los4')}`);
+  out.push(`ساهر 5 | ${code('los5')}`);
   out.push('');
-  out.push(SEPARATOR);
+  out.push(SEP);
   out.push('');
-
   out.push('وحدات الميناء :');
   out.push('');
-  out.push('حرة 1 | H-000');
-  out.push('حرة 2 | H-000');
-  out.push('حرة 3 | H-000');
-  out.push('حرة 4 | H-000');
-  out.push('حرة 5 | H-000');
+  out.push(`حرة 1 | ${code('port1')}`);
+  out.push(`حرة 2 | ${code('port2')}`);
+  out.push(`حرة 3 | ${code('port3')}`);
+  out.push(`حرة 4 | ${code('port4')}`);
+  out.push(`حرة 5 | ${code('port5')}`);
 
-  out.push('');
-  out.push(SEPARATOR);
-  out.push('');
+  document.getElementById('output').value = out.join('\n');
+}
 
-  out.push('الدورات المفعلة  :');
-  out.push('');
-  out.push('البحث الجنائي :');
-  out.push('قائد فرقة البحث الجنائي | H-000');
-  out.push('نائب الفرقة | H-000');
-  out.push('جنائي 1 | H-000');
-  out.push('جنائي 2 | H-000');
-  out.push('');
-  out.push('القوات الخاصة | SWAT :');
-  out.push('حزم 1 | H-000');
-  out.push('رمح 1 | H-000');
-  out.push('');
-  out.push('الأمن والحماية :');
-  out.push('حماية 1 | H-000');
-  out.push('حماية 2 | H-000');
-  out.push('');
-  out.push('عين 1 | H-000');
-  out.push('ساحل 1 | H-000');
-  out.push('سجن 1 | H-000');
-
-  output.value = out.join('\n');
+function copyReport(){
+  const t = document.getElementById('output');
+  t.select();
+  document.execCommand('copy');
 }
 </script>
 
