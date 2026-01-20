@@ -294,13 +294,6 @@
       for (const p of EXCLUDE_PREFIXES) if (labelText.startsWith(p)) return;
       if (labelText === 'العمليات' || labelText === 'نائب العمليات') return;
 
-      const playerWrap = document.createElement('div');
-      playerWrap.className = 'player-wrap';
-      const chk = document.createElement('input');
-      chk.type = 'checkbox'; chk.className = 'playerChk'; chk.title = 'لاعب معتمد';
-      const span = document.createElement('span'); span.className='playerLabel'; span.textContent='لاعب معتمد';
-      const mention = document.createElement('input'); mention.className='playerMention'; mention.placeholder='@player';
-      playerWrap.appendChild(chk); playerWrap.appendChild(span); playerWrap.appendChild(mention);
 
       const btn = row.querySelector('.hide-btn, .del-btn');
       if (btn) row.insertBefore(playerWrap, btn);
@@ -467,12 +460,6 @@
 
       const txt = document.createElement('span'); txt.className='note-text';
       txt.textContent = formatNoteText(code,count,type);
-
-      const playerWrap = document.createElement('div'); playerWrap.className='player-wrap';
-      const chk = document.createElement('input'); chk.type='checkbox'; chk.className='playerChk';
-      const lbl = document.createElement('span'); lbl.className='playerLabel'; lbl.textContent='لاعب معتمد';
-      const mention = document.createElement('input'); mention.type='text'; mention.className='playerMention'; mention.placeholder='@player';
-      mention.style.display='none';
 
       chk.addEventListener('change', ()=> {
         if (chk.checked) mention.style.display='inline-block';
