@@ -74,6 +74,10 @@
       margin-bottom: 6px;
     }
 
+    .group-separator {
+      height: 15px;
+    }
+
     .item-input {
       flex-grow: 1;
       padding: 6px 10px;
@@ -169,58 +173,34 @@
     <div class="section">
       <div class="section-title">القائمة الرئيسية:</div>
       <div class="custom-actions">
-        <button class="custom-btn" onclick="addRank('م قيادة')">+ م قيادة</button>
-        <button class="custom-btn" onclick="addRank('درع')">+ درع</button>
-        <button class="custom-btn" onclick="addRank('برق')">+ برق</button>
-        <button class="custom-btn" onclick="addRank('صقر')">+ صقر</button>
-        <button class="custom-btn" onclick="addRank('سهم')">+ سهم</button>
-        <button class="custom-btn" onclick="addRank('أسماك')">+ أسماك</button>
+        <button class="custom-btn" onclick="addRank('م قيادة', false)">+ م قيادة</button>
+        <button class="custom-btn" onclick="addRank('درع', true)">+ درع</button>
+        <button class="custom-btn" onclick="addRank('برق', true)">+ برق</button>
+        <button class="custom-btn" onclick="addRank('صقر', true)">+ صقر</button>
+        <button class="custom-btn" onclick="addRank('سهم', true)">+ سهم</button>
+        <button class="custom-btn" onclick="addRank('أسماك', true)">+ أسماك</button>
       </div>
       <div id="mainList">
-        <div class="item-row">
-          <input type="text" class="item-input" value="م قيادة | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="درع 1 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="برق 1 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="صقر 1 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="سهم 1 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="سهم 2 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="مشرف أمن 1 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="أمن 1 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="أمن 2 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="أسماك 1 | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
-        <div class="item-row">
-          <input type="text" class="item-input" value="الشرطة العسكرية | H-000" />
-          <button class="add-btn" onclick="removeItem(this)">حذف</button>
-        </div>
+        <div class="item-row"><input type="text" class="item-input" value="م قيادة | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="درع 1 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="برق 1 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="صقر 1 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="سهم 1 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="item-row"><input type="text" class="item-input" value="سهم 2 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="مشرف أمن 1 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="item-row"><input type="text" class="item-input" value="مشرف أمن 2 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="أمن 1 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="item-row"><input type="text" class="item-input" value="أمن 2 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="أسماك 1 | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
+        <div class="group-separator"></div>
+        <div class="item-row"><input type="text" class="item-input" value="الشرطة العسكرية | H-000" /><button class="add-btn" onclick="removeItem(this)">حذف</button></div>
       </div>
     </div>
 
@@ -233,26 +213,31 @@
   </div>
 
   <script>
-    function addRank(type) {
+    function addRank(type, withNumber = true) {
       const mainList = document.getElementById("mainList");
-      const existingItems = mainList.querySelectorAll(".item-input");
+      let newElementValue;
 
-      let lastElement = null;
-      let highestCount = 0;
+      if (withNumber) {
+        const existingItems = Array.from(mainList.querySelectorAll(".item-input"));
+        let highestCount = 0;
 
-      // البحث عن العناصر الموجودة من نفس الاسم للحصول على آخر رقم
-      existingItems.forEach((item) => {
-        if (item.value.startsWith(type)) {
-          lastElement = item.parentElement;
-          const match = item.value.match(/\d+/);
-          if (match) {
-            highestCount = Math.max(highestCount, parseInt(match[0]));
+        existingItems.forEach((item) => {
+          const value = item.value;
+          if (value.startsWith(type)) {
+            const match = value.match(/\d+/);
+            if (match) {
+              const number = parseInt(match[0], 10);
+              if (number > highestCount) {
+                highestCount = number;
+              }
+            }
           }
-        }
-      });
+        });
 
-      const newNumber = highestCount + 1; // الرقم الجديد
-      const newElementValue = `${type} ${newNumber} | H-000`;
+        newElementValue = `${type} ${highestCount + 1} | H-000`;
+      } else {
+        newElementValue = `${type} | H-000`;
+      }
 
       const newRow = document.createElement("div");
       newRow.className = "item-row";
@@ -261,33 +246,51 @@
         <button class="add-btn" onclick="removeItem(this)">حذف</button>
       `;
 
-      if (lastElement) {
-        lastElement.after(newRow);
+      const rows = Array.from(mainList.children);
+      let lastSameTypeRow = null;
+
+      rows.forEach((item) => {
+        if (item.querySelector(".item-input") && item.querySelector(".item-input").value.startsWith(type)) {
+          lastSameTypeRow = item;
+        }
+      });
+
+      if (lastSameTypeRow) {
+        lastSameTypeRow.insertAdjacentElement("afterend", newRow);
       } else {
+        if (mainList.lastChild && !mainList.lastChild.classList.contains("group-separator")) {
+          const separator = document.createElement("div");
+          separator.className = "group-separator";
+          mainList.appendChild(separator);
+        }
         mainList.appendChild(newRow);
       }
     }
 
-    function removeItem(button) {
-      button.parentElement.remove();
-    }
-
     function generateReport() {
-      let reportText = `وقت التقرير: ${document.getElementById("reportTimeInput").value}
-مركز العمليات الميناء: ${document.getElementById("portOperationsInput").value}
-مركز العمليات لوس: ${document.getElementById("losOperationsInput").value}
-نائب مركز العمليات: ${document.getElementById("deputyOperationsInput").value}
+      const reportTime = document.getElementById("reportTimeInput").value;
+      const portOperations = document.getElementById("portOperationsInput").value;
+      const losOperations = document.getElementById("losOperationsInput").value;
+      const deputyOperations = document.getElementById("deputyOperationsInput").value;
 
-—————————————————
-القائمة الرئيسية:
-—————————————————
-`;
+      let reportText = `وقت التقرير: ${reportTime}\nمركز العمليات الميناء: ${portOperations}\nمركز العمليات لوس: ${losOperations}\nنائب مركز العمليات: ${deputyOperations}\n\n\nالقائمة الرئيسية:\n\n`;
 
-      const mainListItems = document.querySelectorAll("#mainList .item-input");
-      mainListItems.forEach((item) => {
-        if (item.value.trim()) {
-          reportText += `${item.value.trim()}\n`;
+      let previousCategory = "";
+      const rows = Array.from(document.querySelectorAll("#mainList .item-row"));
+      rows.forEach((row, index) => {
+        const input = row.querySelector(".item-input");
+        const value = input.value.trim();
+        const groupName = value.split(" ")[0]; // Extract the category name
+
+        // Add a blank line before a new category
+        if (index === 0 || groupName !== previousCategory) {
+          if (index !== 0) {
+            reportText += "\n";
+          }
+          previousCategory = groupName;
         }
+
+        reportText += `${value}\n`;
       });
 
       document.getElementById("reportOutput").value = reportText.trim();
@@ -296,12 +299,17 @@
     function copyToClipboard() {
       const reportOutput = document.getElementById("reportOutput");
       if (!reportOutput.value.trim()) {
-        alert("لا يوجد تقرير لنسخه!");
+        alert("��ا يوجد تقرير لنسخه!");
         return;
       }
       reportOutput.select();
       document.execCommand("copy");
       alert("تم نسخ التقرير بنجاح!");
+    }
+
+    function removeItem(button) {
+      const parent = button.parentElement;
+      parent.remove();
     }
   </script>
 </body>
